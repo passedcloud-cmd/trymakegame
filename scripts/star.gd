@@ -28,8 +28,14 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
 	GameState.flags["star%d_found" % star_number] = true
-	if star_number == 1:
-		GameState.flags["has_dash"] = true
+	# 별마다 새 능력을 줘요.
+	match star_number:
+		1:
+			GameState.flags["has_dash"] = true
+		2:
+			GameState.flags["has_starlight"] = true
+			GameState.starlight_on = true
+			body.update_light(true)
 	set_deferred("monitoring", false)
 	hide()
 	Dialogue.start("★ 별", pickup_lines)

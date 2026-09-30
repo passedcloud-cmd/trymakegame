@@ -4,42 +4,61 @@ extends NPC
 const STAR_TEXTURE := preload("res://assets/village/star.png")
 const LIGHT_TEXTURE := preload("res://assets/village/light.png")
 
+## 별을 가져왔을 때 하는 말 (별 번호마다)
+const RETURN_LINES := {
+	1: ["오오...! 그 빛은... 첫 번째 별이로구나!", "자, 별을 하늘로 돌려보내 주자꾸나."],
+	2: ["두 번째 별이구나! 캄캄한 동굴에서 용케도 찾아왔구나.", "이 따스한 빛... 자, 하늘로 돌려보내 주자꾸나."],
+}
+## 별을 돌려보낸 뒤에 하는 말 (별 번호마다)
+const AFTER_RETURN_LINES := {
+	1: [
+		"보아라, 마을이 조금 밝아졌구나! 고맙다, 코랄.",
+		"두 번째 별은 강 건너 캄캄한 동굴 쪽으로 떨어졌다는구나.",
+		"동쪽 숲 끝의 부서진 다리는... 네 대시라면 건널 수 있을 게다!",
+		"동굴은 몹시 어두우니, 거북이 할머니께 먼저 들러 보려무나.",
+	],
+	2: [
+		"마을이 한층 더 밝아졌구나! 이제 별은 하나만 남았다.",
+		"마지막 별은... 그림자 곰이 품고 있다는 소문이 있단다.",
+		"그 녀석은 무척 강하다. 준비를 단단히 하고 가거라, 코랄.",
+	],
+}
+
 
 func talk() -> void:
 	var flags := GameState.flags
 
-	if flags.get("star1_found", false) and not flags.get("star1_returned", false):
-		await return_first_star()
+	# 주워 왔지만 아직 돌려보내지 않은 별이 있으면 돌려보내요.
+	for n in [1, 2, 3]:
+		if flags.get("star%d_found" % n, false) and not flags.get("star%d_returned" % n, false):
+			await return_star(n)
+			return
+
+	if flags.get("star2_returned", false):
+		Dialogue.start(npc_name, ["마지막 별은 그림자 곰이 품고 있다는구나.", "조심하렴, 코랄."])
 	elif flags.get("star1_returned", false):
 		Dialogue.start(npc_name, [
 			"두 번째 별은 강 건너 캄캄한 동굴 쪽에 떨어졌다는구나.",
-			"동굴 안은 몹시 어두우니 조심하렴.",
+			"동굴은 몹시 어두우니, 거북이 할머니께 먼저 들러 보려무나." if not GameState.has_jar() else "반딧불이 병이 있으니 조금은 앞이 보일 게다. 조심하렴.",
 		])
 	else:
 		Dialogue.start(npc_name, lines)
 
 
-func return_first_star() -> void:
-	Dialogue.start(npc_name, [
-		"오오...! 그 빛은... 첫 번째 별이로구나!",
-		"자, 별을 하늘로 돌려보내 주자꾸나.",
-	])
+func return_star(number: int) -> void:
+	Dialogue.start(npc_name, RETURN_LINES.get(number, ["별을 하늘로 돌려보내 주자꾸나."]))
 	await Dialogue.finished
 
 	# 연출: 별이 코랄에게서 하늘로 날아올라요.
 	Dialogue.cutscene = true
 	await fly_star_to_sky(get_player().global_position)
-	GameState.flags["star1_returned"] = true
+	GameState.flags["star%d_returned" % number] = true
 	GameState.stars_returned += 1
 	get_tree().call_group("night_tint", "brighten")
 	await get_tree().create_timer(2.5).timeout
 	Dialogue.cutscene = false
 
-	Dialogue.start(npc_name, [
-		"보아라, 마을이 조금 밝아졌구나! 고맙다, 코랄.",
-		"두 번째 별은 강 건너 캄캄한 동굴 쪽으로 떨어졌다는구나.",
-		"동쪽 숲 끝의 부서진 다리는... 네 대시라면 건널 수 있을 게다!",
-	])
+	Dialogue.start(npc_name, AFTER_RETURN_LINES.get(number, ["고맙다, 코랄."]))
 
 
 func fly_star_to_sky(from: Vector2) -> void:

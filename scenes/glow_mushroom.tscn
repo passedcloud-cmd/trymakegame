@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/heart_pickup.gd" id="1_heart"]
+[ext_resource type="Texture2D" path="res://assets/cave/glow_mushroom.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/village/light.png" id="3_light"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 8.0
+
+[node name="GlowMushroom" type="Area2D"]
+script = ExtResource("1_heart")
+pickup_lines = Array[String](["빛나는 버섯을 찾았다! 냠냠...", "(최대 체력이 하트 1칸 늘었다!)"])
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="Light" type="PointLight2D" parent="."]
+position = Vector2(0, -4)
+color = Color(0.5, 1, 0.7, 1)
+energy = 0.9
+texture = ExtResource("3_light")
+texture_scale = 1.0

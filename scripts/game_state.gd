@@ -23,6 +23,12 @@ var stars_returned := 0:
 ## 퀘스트 보상으로 늘어난 하트 개수
 var bonus_hearts := 0
 
+## 다음 맵에 들어갈 때 코랄이 설 출발 지점 이름 (비어 있으면 맵에 놓인 자리 그대로)
+var next_spawn := ""
+
+## 별빛을 켜 두었는지 (맵을 옮겨도 그대로 유지돼요)
+var starlight_on := false
+
 ## 퀘스트 진행 상황을 적어두는 메모장이에요.
 ## 예: flags["baby_found"] = true → 아기 토끼를 찾았음
 var flags := {}
@@ -33,9 +39,21 @@ func has_dash() -> bool:
 	return flags.get("has_dash", false)
 
 
+## 반딧불이 병을 받았는지 (거북이 할머니가 줘요)
+func has_jar() -> bool:
+	return flags.get("has_jar", false)
+
+
+## 별빛을 배웠는지 (두 번째 별을 주우면 배워요)
+func has_starlight() -> bool:
+	return flags.get("has_starlight", false)
+
+
 ## 게임을 처음부터 다시 시작할 때 모두 지워요.
 func reset() -> void:
 	acorns = 0
 	stars_returned = 0
 	bonus_hearts = 0
+	next_spawn = ""
+	starlight_on = false
 	flags.clear()

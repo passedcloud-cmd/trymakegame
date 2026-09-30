@@ -1,0 +1,138 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/cave_tilemap.tscn" id="1_tilemap"]
+[ext_resource type="Script" path="res://scripts/map_bounds.gd" id="2_bounds"]
+[ext_resource type="PackedScene" path="res://scenes/exit_area.tscn" id="3_exit"]
+[ext_resource type="Texture2D" path="res://assets/village/light.png" id="4_light"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_player"]
+[ext_resource type="PackedScene" path="res://scenes/props/crystal.tscn" id="6_crystal"]
+[ext_resource type="PackedScene" path="res://scenes/shadow_slime.tscn" id="7_slime"]
+[ext_resource type="PackedScene" path="res://scenes/star.tscn" id="8_star"]
+[ext_resource type="PackedScene" path="res://scenes/shadow_veil.tscn" id="9_veil"]
+[ext_resource type="PackedScene" path="res://scenes/glow_mushroom.tscn" id="10_mushroom"]
+[ext_resource type="PackedScene" path="res://scenes/acorn.tscn" id="11_acorn"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="12_hud"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_h"]
+size = Vector2(672, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_v"]
+size = Vector2(16, 416)
+
+[node name="Cave" type="Node2D"]
+
+[node name="CaveTilemap" parent="." instance=ExtResource("1_tilemap")]
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+script = ExtResource("2_bounds")
+map_size = Vector2(640, 384)
+
+[node name="Top" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(320, -8)
+shape = SubResource("RectangleShape2D_bound_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(320, 392)
+shape = SubResource("RectangleShape2D_bound_h")
+
+[node name="Left" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(-8, 192)
+shape = SubResource("RectangleShape2D_bound_v")
+
+[node name="Right" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(648, 192)
+shape = SubResource("RectangleShape2D_bound_v")
+
+[node name="Entrance" type="Marker2D" parent="." groups=["spawn"]]
+position = Vector2(320, 340)
+
+[node name="ExitToVillage" parent="." instance=ExtResource("3_exit")]
+position = Vector2(320, 380)
+target_scene = "res://scenes/main.tscn"
+target_spawn = "FromCave"
+
+[node name="MoonlightFromOutside" type="PointLight2D" parent="."]
+position = Vector2(320, 390)
+color = Color(0.55, 0.65, 1, 1)
+energy = 0.8
+texture = ExtResource("4_light")
+texture_scale = 2.0
+
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Objects" instance=ExtResource("5_player")]
+position = Vector2(320, 340)
+
+[node name="Crystal1" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(268, 290)
+
+[node name="Crystal2" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(372, 290)
+
+[node name="Crystal3" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(232, 140)
+
+[node name="Crystal4" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(408, 140)
+
+[node name="Crystal5" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(40, 30)
+
+[node name="Crystal6" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(168, 30)
+
+[node name="Crystal7" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(40, 250)
+
+[node name="Crystal8" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(600, 44)
+
+[node name="Crystal9" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(488, 44)
+
+[node name="Crystal10" parent="Objects" instance=ExtResource("6_crystal")]
+position = Vector2(616, 214)
+
+[node name="ShadowSlime1" parent="Objects" instance=ExtResource("7_slime")]
+position = Vector2(330, 160)
+
+[node name="ShadowSlime2" parent="Objects" instance=ExtResource("7_slime")]
+position = Vector2(110, 240)
+
+[node name="ShadowSlime3" parent="Objects" instance=ExtResource("7_slime")]
+position = Vector2(48, 150)
+
+[node name="ShadowSlime4" parent="Objects" instance=ExtResource("7_slime")]
+position = Vector2(540, 90)
+
+[node name="ShadowSlime5" parent="Objects" instance=ExtResource("7_slime")]
+position = Vector2(580, 120)
+
+[node name="Star2" parent="Objects" instance=ExtResource("8_star")]
+position = Vector2(104, 56)
+star_number = 2
+pickup_lines = Array[String](["★ 두 번째 별을 찾았다!", "따스한 별빛이 코랄을 감싼다... 어둠이 조금도 무섭지 않다!", "(V 키로 별빛을 켜고 끌 수 있게 되었다!)", "(별빛은 그림자 몬스터를 쫓아내고, 길을 막은 그림자 장막을 걷어낸다.)"])
+
+[node name="ShadowVeilShortcut" parent="Objects" instance=ExtResource("9_veil")]
+position = Vector2(256, 104)
+
+[node name="ShadowVeilSecret" parent="Objects" instance=ExtResource("9_veil")]
+position = Vector2(576, 184)
+
+[node name="GlowMushroom" parent="Objects" instance=ExtResource("10_mushroom")]
+position = Vector2(576, 250)
+
+[node name="Acorn1" parent="Objects" instance=ExtResource("11_acorn")]
+position = Vector2(548, 230)
+
+[node name="Acorn2" parent="Objects" instance=ExtResource("11_acorn")]
+position = Vector2(604, 270)
+
+[node name="Acorn3" parent="Objects" instance=ExtResource("11_acorn")]
+position = Vector2(560, 50)
+
+[node name="Darkness" type="CanvasModulate" parent="."]
+color = Color(0.07, 0.06, 0.12, 1)
+
+[node name="HUD" parent="." instance=ExtResource("12_hud")]

@@ -40,6 +40,8 @@ signal health_changed(hp: int, max_hp: int)
 @onready var tail_hitbox: Area2D = $TailHitbox
 @onready var tail_swipe: Sprite2D = $TailSwipe
 @onready var gap_sensor: Area2D = $GapSensor
+@onready var light: PointLight2D = $Light
+@onready var camera: Camera2D = $Camera2D
 
 var hp := 0
 var facing := Vector2.DOWN       # 코랄이 바라보는 방향
@@ -63,6 +65,33 @@ func _ready() -> void:
 	max_hp += GameState.bonus_hearts
 	hp = max_hp
 	tail_swipe.hide()
+	move_to_spawn()
+	fit_camera_to_map()
+	update_light(false)
+
+
+# 다른 맵에서 넘어왔으면, 정해진 출발 지점으로 옮겨요.
+func move_to_spawn() -> void:
+	if GameState.next_spawn == "":
+		return
+	for marker in get_tree().get_nodes_in_group("spawn"):
+		if marker.name == GameState.next_spawn:
+			global_position = marker.global_position
+			# 동굴에 들어갈 땐 위쪽(안쪽)을, 나올 땐 아래쪽을 바라봐요.
+			var entering := marker.name == "Entrance"
+			facing = Vector2.UP if entering else Vector2.DOWN
+			facing_row = row_up if entering else row_down
+			return
+
+
+# 카메라가 맵 밖을 비추지 않도록 맵 크기에 맞춰요.
+func fit_camera_to_map() -> void:
+	var bounds := get_tree().get_first_node_in_group("map_bounds")
+	if bounds:
+		camera.limit_left = 0
+		camera.limit_top = 0
+		camera.limit_right = int(bounds.map_size.x)
+		camera.limit_bottom = int(bounds.map_size.y)
 
 
 # 이 함수는 게임이 돌아가는 동안 1초에 60번씩 자동으로 불려요.
@@ -77,6 +106,9 @@ func _physics_process(delta: float) -> void:
 	# 대화 중에는 움직이지 않아요.
 	if Dialogue.is_busy():
 		direction = Vector2.ZERO
+	elif Input.is_action_just_pressed("starlight") and GameState.has_starlight():
+		GameState.starlight_on = not GameState.starlight_on
+		update_light(true)
 	elif Input.is_action_just_pressed("dash") and can_dash():
 		start_dash(direction)
 	elif Input.is_action_just_pressed("attack") and cooldown_timer <= 0.0 and not is_dashing():
@@ -132,6 +164,38 @@ func update_attack(delta: float) -> void:
 
 	if attack_timer <= 0.0:
 		tail_swipe.hide()
+
+
+# ── 불빛 ───────────────────────────────────────────────
+
+## 별빛이 켜져 있는지 알려줘요. (그림자 장막, 슬라임이 이걸 확인해요)
+func is_starlight_on() -> bool:
+	return GameState.has_starlight() and GameState.starlight_on
+
+
+## 코랄 주위의 불빛을 정해요.
+## 별빛이 켜져 있으면 크고 밝게, 반딧불이 병만 있으면 작고 은은하게, 둘 다 없으면 꺼요.
+func update_light(animate: bool) -> void:
+	var light_scale := 0.0
+	var energy := 0.0
+	var color := Color(0.8, 1.0, 0.55)
+	if is_starlight_on():
+		light_scale = 3.6
+		energy = 1.1
+		color = Color(1.0, 0.93, 0.65)
+	elif GameState.has_jar():
+		light_scale = 1.5
+		energy = 0.9
+	light.enabled = energy > 0.0 or animate
+	if not animate:
+		light.texture_scale = maxf(light_scale, 0.1)
+		light.energy = energy
+		light.color = color
+		return
+	var tween := create_tween().set_parallel()
+	tween.tween_property(light, "texture_scale", maxf(light_scale, 0.1), 0.4).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(light, "energy", energy, 0.4)
+	tween.tween_property(light, "color", color, 0.4)
 
 
 # ── 대시 ───────────────────────────────────────────────
@@ -234,7 +298,7 @@ func die() -> void:
 	is_dead = true
 	sprite.visible = true
 	tail_swipe.hide()
-	# 천천히 사라진 뒤 집 앞에서 다시 깨어나요.
+	# 천천히 사라진 뒤 이 맵에 마지막으로 들어온 곳에서 다시 깨어나요.
 	# 별, 도토리, 퀘스트 진행 상황은 그대로 남아요.
 	var tween := create_tween()
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.8)

@@ -24,5 +24,17 @@ var story_index := 0
 
 
 func talk() -> void:
+	# 첫 번째 별을 돌려보낸 뒤에는 동굴에 들고 갈 반딧불이 병을 줘요.
+	if GameState.flags.get("star1_returned", false) and not GameState.has_jar():
+		GameState.flags["has_jar"] = true
+		get_player().update_light(true)
+		Dialogue.start(npc_name, [
+			"오, 코랄. 강 건너 캄캄한 동굴에 가려는 게냐?",
+			"그 동굴은 빛 없이는 한 발짝도 들어갈 수 없단다.",
+			"옜다, 이 할미가 여름내 모아 둔 반딧불이 병이란다. 조금은 앞이 보일 게야.",
+			"(반딧불이 병을 받았다! 코랄 주위가 은은하게 밝아졌다.)",
+		])
+		return
+
 	Dialogue.start(npc_name, STORIES[story_index])
 	story_index = (story_index + 1) % STORIES.size()

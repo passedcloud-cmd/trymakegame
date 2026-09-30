@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3]
+[gd_scene load_steps=35 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/village_tilemap.tscn" id="2_tilemap"]
@@ -30,6 +30,8 @@
 [ext_resource type="PackedScene" path="res://scenes/star.tscn" id="28_star"]
 [ext_resource type="Texture2D" path="res://assets/village/cave.png" id="29_cave"]
 [ext_resource type="Script" path="res://scripts/night_tint.gd" id="30_night_tint"]
+[ext_resource type="Script" path="res://scripts/map_bounds.gd" id="31_bounds"]
+[ext_resource type="Script" path="res://scripts/cave_entrance.gd" id="32_cave_entrance"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_h"]
 size = Vector2(832, 16)
@@ -42,6 +44,8 @@ size = Vector2(16, 416)
 [node name="VillageTilemap" parent="." instance=ExtResource("2_tilemap")]
 
 [node name="Bounds" type="StaticBody2D" parent="."]
+script = ExtResource("31_bounds")
+map_size = Vector2(800, 384)
 
 [node name="Top" type="CollisionShape2D" parent="Bounds"]
 position = Vector2(400, -8)
@@ -58,6 +62,9 @@ shape = SubResource("RectangleShape2D_bound_v")
 [node name="Right" type="CollisionShape2D" parent="Bounds"]
 position = Vector2(808, 192)
 shape = SubResource("RectangleShape2D_bound_v")
+
+[node name="FromCave" type="Marker2D" parent="." groups=["spawn"]]
+position = Vector2(744, 126)
 
 [node name="Objects" type="Node2D" parent="."]
 y_sort_enabled = true
@@ -365,6 +372,7 @@ hframes = 1
 
 [node name="DarkCave" parent="Objects" instance=ExtResource("3_npc")]
 position = Vector2(744, 100)
+script = ExtResource("32_cave_entrance")
 npc_name = "캄캄한 동굴"
 lines = Array[String](["동굴 안은 한 치 앞도 안 보일 만큼 캄캄하다...", "안쪽에서 무언가 반짝인 것 같기도 한데...", "(빛이 있으면 들어갈 수 있을 것 같다.)"])
 

@@ -9,6 +9,8 @@ extends CharacterBody2D
 @export var chase_range: float = 72.0
 ## 코랄에게 닿았을 때 주는 피해 (하트 개수)
 @export var damage: int = 1
+## 별빛이 이 거리(픽셀) 안에 비치면 도망가요.
+@export var fear_range: float = 64.0
 ## 사라질 때 도토리를 떨어뜨릴 확률 (1.0 = 100%)
 @export_range(0.0, 1.0) var acorn_drop_chance: float = 1.0
 
@@ -56,7 +58,11 @@ func _physics_process(delta: float) -> void:
 # 어느 쪽으로 움직일지 정해요.
 func decide_direction(delta: float) -> Vector2:
 	var player := get_tree().get_first_node_in_group("player") as Node2D
-	if player and global_position.distance_to(player.global_position) < chase_range:
+	var distance := global_position.distance_to(player.global_position) if player else INF
+	if player and player.is_starlight_on() and distance < fear_range:
+		# 별빛이 무서워서 반대쪽으로 도망가요!
+		return player.global_position.direction_to(global_position) * 1.4
+	if player and distance < chase_range:
 		# 코랄이 가까우면 코랄 쪽으로!
 		return global_position.direction_to(player.global_position)
 
