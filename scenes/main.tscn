@@ -1,8 +1,10 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Texture2D" path="res://assets/grass.png" id="2_grass"]
 [ext_resource type="Texture2D" path="res://assets/rock.png" id="3_rock"]
+[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="4_npc"]
+[ext_resource type="Texture2D" path="res://assets/owl_chief.png" id="5_owl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
 size = Vector2(26, 14)
@@ -92,3 +94,12 @@ position = Vector2(0, 7)
 shape = SubResource("RectangleShape2D_rock")
 
 [node name="Player" parent="Objects" instance=ExtResource("1_player")]
+
+[node name="OwlChief" parent="Objects" instance=ExtResource("4_npc")]
+position = Vector2(-64, -40)
+npc_name = "부엉이 촌장"
+lines = Array[String](["오, 코랄! 무사했구나. 어젯밤 일은 너도 봤겠지?", "하늘의 별 세 개가 그만 숲으로 떨어지고 말았단다.", "별빛이 사라지자 마을은 어둠에 잠기고... 그림자 몬스터들까지 나타났지.", "코랄, 네가 별을 찾아와 줄 수 있겠니? 먼저 동쪽 숲을 살펴보렴."])
+
+[node name="Sprite2D" parent="Objects/OwlChief" index="0"]
+texture = ExtResource("5_owl")
+hframes = 2

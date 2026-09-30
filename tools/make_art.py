@@ -172,9 +172,79 @@ def make_rock():
     img.save(OUT / "rock.png")
 
 
+# ── 부엉이 촌장 ──────────────────────────────────────────
+OWL_COLORS = {
+    ".": (0, 0, 0, 0),
+    "o": (48, 30, 28, 255),     # 테두리
+    "b": (140, 98, 68, 255),    # 갈색 깃털
+    "w": (240, 222, 190, 255),  # 얼굴 (크림색)
+    "y": (255, 214, 90, 255),   # 노란 눈
+    "k": (27, 27, 42, 255),     # 눈동자
+    "e": (240, 150, 60, 255),   # 부리, 발
+    "c": (224, 196, 150, 255),  # 배
+    "v": (170, 120, 80, 255),   # 배 무늬
+    "g": (120, 170, 110, 255),  # 촌장 목도리 (초록)
+}
+OWL_TOP = [
+    "........",
+    "..o.....",
+    "..oboooo",
+    ".obbbbbb",
+    ".obwwwbb",
+]
+OWL_EYES_OPEN = [".owykywb", ".owykywb"]
+OWL_EYES_CLOSED = [".owwwwwb", ".owkkkwb"]
+OWL_BOTTOM = [
+    ".obwwwbe",
+    ".ogggggg",
+    ".obbcccc",
+    ".obbcvcv",
+    "..obcccc",
+    "...obbbb",
+    "...oeeo.",
+    "........",
+]
+
+
+def make_owl():
+    """부엉이 촌장: 가로 2칸 (눈 뜬 모습, 눈 감은 모습)."""
+    sheet = Image.new("RGBA", (32, 16))
+    for i, eyes in enumerate([OWL_EYES_OPEN, OWL_EYES_CLOSED]):
+        rows = mirror(OWL_TOP + eyes + OWL_BOTTOM)
+        img = Image.new("RGBA", (16, 16))
+        for y, row in enumerate(rows):
+            for x, ch in enumerate(row):
+                img.putpixel((x, y), OWL_COLORS[ch])
+        sheet.paste(img, (i * 16, 0))
+    sheet.save(OUT / "owl_chief.png")
+
+
+def make_talk_icon():
+    """NPC 머리 위에 뜨는 말풍선 (11x10)."""
+    rows = [
+        ".ooooooooo.",
+        "owwwwwwwwwo",
+        "owwwwwwwwwo",
+        "owkwwkwwkwo",
+        "owwwwwwwwwo",
+        ".ooowwoooo.",
+        "...owo.....",
+        "...oo......",
+    ]
+    colors = {".": (0, 0, 0, 0), "o": (27, 27, 42, 255), "w": (255, 250, 235, 255),
+              "k": (27, 27, 42, 255)}
+    img = Image.new("RGBA", (11, 8))
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            img.putpixel((x, y), colors[ch])
+    img.save(OUT / "talk_icon.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     make_fox()
     make_grass()
     make_rock()
+    make_owl()
+    make_talk_icon()
     print("assets/ 폴더에 그림을 만들었어요.")

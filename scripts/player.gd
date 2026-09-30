@@ -24,6 +24,10 @@ func _physics_process(delta: float) -> void:
 	# 예: 오른쪽 키 → (1, 0), 위쪽 키 → (0, -1)
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 
+	# 대화 중에는 움직이지 않아요.
+	if Dialogue.is_open:
+		direction = Vector2.ZERO
+
 	# 방향 × 속도 = 실제로 움직일 빠르기
 	velocity = direction * speed
 
