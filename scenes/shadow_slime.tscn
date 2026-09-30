@@ -10,6 +10,7 @@ size = Vector2(12, 6)
 radius = 8.0
 
 [node name="ShadowSlime" type="CharacterBody2D" groups=["enemy"]]
+collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_slime")
 

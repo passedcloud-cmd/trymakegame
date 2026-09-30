@@ -19,6 +19,8 @@ signal choice_made(index: int)
 
 ## 대화창이 열려 있는지 알려줘요. (열려 있으면 코랄이 못 움직여요)
 var is_open := false
+## 연출(컷신) 중이면 true. 대화창이 닫혀 있어도 코랄과 몬스터가 멈춰요.
+var cutscene := false
 
 var lines: Array = []
 var line_index := 0
@@ -26,6 +28,11 @@ var shown_chars := 0.0
 var arrow_time := 0.0
 var choices: Array = []
 var choice_index := 0
+
+
+## 대화나 연출 중이라 모두 멈춰야 하면 true를 돌려줘요.
+func is_busy() -> bool:
+	return is_open or cutscene
 
 
 func _ready() -> void:

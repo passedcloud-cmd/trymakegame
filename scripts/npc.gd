@@ -29,7 +29,7 @@ func _process(delta: float) -> void:
 	time += delta
 
 	# 말풍선은 코랄이 가까이 있고, 대화 중이 아닐 때만 보여요. 위아래로 살짝 흔들려요.
-	talk_icon.visible = is_talk_target() and not Dialogue.is_open
+	talk_icon.visible = is_talk_target() and not Dialogue.is_busy()
 	talk_icon.position.y = -16 + round(sin(time * 4.0))
 
 	# 가끔 눈을 깜빡여요.
@@ -38,7 +38,7 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if is_talk_target() and not Dialogue.is_open and event.is_action_pressed("interact"):
+	if is_talk_target() and not Dialogue.is_busy() and event.is_action_pressed("interact"):
 		get_viewport().set_input_as_handled()
 		talk()
 

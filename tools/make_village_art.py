@@ -40,12 +40,14 @@ def tuft(img, x, y, color):
 
 
 def make_tiles():
-    """타일 모음 (가로 8칸 × 세로 2줄).
+    """타일 모음 (가로 8칸 × 세로 4줄).
 
-    윗줄: 풀, 풀(포기), 꽃밭, 흙길, 흙길(자갈), 물, 물(반짝), 숲 바닥
-    아랫줄: 울타리(가로), 울타리(세로), 울타리 기둥, 덤불, 긴 풀, 연못 윗가장자리, 숲 바닥(풀), 숲 바닥(버섯)
+    1줄: 풀, 풀(포기), 꽃밭, 흙길, 흙길(자갈), 물, 물(반짝), 숲 바닥
+    2줄: 울타리(가로), 울타리(세로), 울타리 기둥, 덤불, 긴 풀, 연못 윗가장자리, 숲 바닥(풀), 숲 바닥(버섯)
+    3줄: 다리(위), 다리(아래), 부서진 다리 왼쪽(위/아래), 부서진 다리 오른쪽(위/아래), 끊어진 틈(물), 바위 땅
+    4줄: 절벽, 바위 땅(자갈)
     """
-    img = Image.new("RGBA", (T * 8, T * 2), CLEAR)
+    img = Image.new("RGBA", (T * 8, T * 4), CLEAR)
     grass, grass_d, grass_l = rgba(74, 124, 89), rgba(60, 106, 76), rgba(98, 150, 104)
     path, path_d, path_l = rgba(190, 158, 112), rgba(160, 128, 88), rgba(214, 186, 140)
     water, water_d, water_l = rgba(64, 108, 160), rgba(52, 90, 140), rgba(120, 170, 215)
@@ -151,6 +153,66 @@ def make_tiles():
     d.rectangle([ox + 9, oy + 9, ox + 10, oy + 11], fill=rgba(230, 220, 200))
     d.rectangle([ox + 7, oy + 7, ox + 12, oy + 8], fill=rgba(200, 80, 90))
     img.putpixel((ox + 9, oy + 7), rgba(255, 240, 240))
+
+    # 3줄 ─ 다리와 강
+    oy = T * 2
+    plank, plank_d, plank_l = rgba(166, 116, 72), rgba(118, 80, 50), rgba(196, 146, 96)
+
+    def bridge(ox, rail_top):
+        d.rectangle([ox, oy, ox + 15, oy + 15], fill=plank)
+        for x in range(0, 16, 4):
+            d.line([ox + x, oy, ox + x, oy + 15], fill=plank_d)
+            img.putpixel((ox + x + 2, oy + 5), plank_l)
+        rail_y = oy + 1 if rail_top else oy + 13
+        d.rectangle([ox, rail_y, ox + 15, rail_y + 1], fill=rgba(100, 66, 42))
+        d.line([ox, rail_y + (2 if rail_top else -1), ox + 15, rail_y + (2 if rail_top else -1)], fill=OUTLINE)
+
+    def water_fill(ox):
+        d.rectangle([ox, oy, ox + 15, oy + 15], fill=water)
+        speckle(img, ox, oy, [water_d], 8, ox)
+        for dx in range(4):
+            img.putpixel((ox + 5 + dx, oy + 8), water_l)
+
+    bridge(0, True)
+    bridge(T, False)
+    # 부서진 다리: 한쪽 끝이 들쭉날쭉하게 부서져서 물이 보여요.
+    jag = [9, 11, 8, 12, 10, 9, 13, 10, 8, 11, 12, 9, 10, 8, 11, 12]
+    for i, (rail_top, right_broken) in enumerate([(True, True), (False, True), (True, False), (False, False)]):
+        ox = T * (2 + i)
+        water_fill(ox)
+        bridge(ox, rail_top)
+        for y in range(16):
+            cut = jag[y]
+            xs = range(cut, 16) if right_broken else range(0, 16 - cut)
+            for x in xs:
+                img.putpixel((ox + x, oy + y), water if (x + y) % 5 else water_d)
+            edge_x = cut - 1 if right_broken else 16 - cut
+            img.putpixel((ox + edge_x, oy + y), OUTLINE)
+    # 끊어진 틈 (물 위에 부서진 판자 조각이 떠 있어요)
+    ox = T * 6
+    water_fill(ox)
+    d.rectangle([ox + 3, oy + 4, ox + 6, oy + 5], fill=plank_d)
+    d.rectangle([ox + 9, oy + 11, ox + 12, oy + 12], fill=plank_d)
+    # 바위 땅
+    rock, rock_d, rock_l = rgba(118, 110, 104), rgba(96, 88, 84), rgba(146, 138, 128)
+    ox = T * 7
+    d.rectangle([ox, oy, ox + 15, oy + 15], fill=rock)
+    speckle(img, ox, oy, [rock_d, rock_l], 14, 11)
+
+    # 4줄 ─ 절벽, 바위 땅(자갈)
+    oy = T * 3
+    ox = 0
+    d.rectangle([ox, oy, ox + 15, oy + 15], fill=rgba(84, 74, 72))
+    for y in (3, 8, 13):
+        d.line([ox, oy + y, ox + 15, oy + y], fill=rgba(62, 54, 54))
+    for x, y in [(4, 1), (11, 5), (2, 10), (9, 11)]:
+        d.line([ox + x, oy + y, ox + x + 3, oy + y], fill=rgba(112, 100, 96))
+    ox = T
+    d.rectangle([ox, oy, ox + 15, oy + 15], fill=rock)
+    speckle(img, ox, oy, [rock_d], 8, 12)
+    for x, y in [(3, 4), (10, 10)]:
+        d.rectangle([ox + x, oy + y, ox + x + 1, oy + y + 1], fill=rock_l)
+        d.line([ox + x, oy + y + 2, ox + x + 1, oy + y + 2], fill=rock_d)
 
     img.save(OUT / "tiles.png")
 
@@ -306,6 +368,67 @@ def make_light():
     img.save(OUT / "light.png")
 
 
+def make_star():
+    """떨어진 별 (16x16, 2칸: 반짝이는 모습이 번갈아 나와요)."""
+    sheet = Image.new("RGBA", (32, 16), CLEAR)
+    gold, gold_l, gold_d = rgba(255, 222, 90), rgba(255, 250, 200), rgba(230, 160, 40)
+    for frame in range(2):
+        img = Image.new("RGBA", (16, 16), CLEAR)
+        d = ImageDraw.Draw(img)
+        cx, cy = 7.5, 8
+        points = []
+        for i in range(10):
+            angle = -math.pi / 2 + i * math.pi / 5
+            r = 7.5 if i % 2 == 0 else 3.2
+            points.append((cx + r * math.cos(angle), cy + r * math.sin(angle)))
+        d.polygon(points, fill=gold, outline=gold_d)
+        d.polygon([(cx + (px - cx) * 0.45, cy + (py - cy) * 0.45) for px, py in points], fill=gold_l)
+        # 반짝임
+        sparkle = [(2, 2), (13, 3)] if frame == 0 else [(13, 12), (1, 11)]
+        for x, y in sparkle:
+            for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
+                if 0 <= x + dx < 16 and 0 <= y + dy < 16:
+                    img.putpixel((x + dx, y + dy), gold_l)
+        sheet.paste(img, (frame * 16, 0))
+    sheet.save(OUT / "star.png")
+
+    icon = Image.new("RGBA", (9, 9), CLEAR)
+    rows = [
+        "....o....",
+        "...oyo...",
+        "oooyyyooo",
+        "oyyyyyyyo",
+        ".oyyyyyo.",
+        "..oyyyo..",
+        ".oyyoyyo.",
+        ".oyo.oyo.",
+        ".oo...oo.",
+    ]
+    colors = {".": CLEAR, "o": rgba(120, 80, 20), "y": rgba(255, 222, 90)}
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            icon.putpixel((x, y), colors[ch])
+    icon.save(OUT / "star_icon.png")
+
+
+def make_cave():
+    """캄캄한 동굴 입구 (32x32)."""
+    img = Image.new("RGBA", (32, 32), CLEAR)
+    d = ImageDraw.Draw(img)
+    stone, stone_d, stone_l = rgba(110, 100, 96), rgba(80, 72, 70), rgba(140, 130, 122)
+    d.ellipse([1, 2, 30, 44], fill=OUTLINE)
+    d.ellipse([2, 3, 29, 43], fill=stone)
+    d.ellipse([7, 9, 24, 44], fill=OUTLINE)
+    d.ellipse([8, 10, 23, 44], fill=rgba(12, 10, 18))
+    for x, y in [(4, 12), (26, 14), (6, 22), (25, 24), (15, 5)]:
+        d.rectangle([x, y, x + 1, y + 1], fill=stone_l)
+        img.putpixel((x, y + 2), stone_d)
+    # 동굴 안에서 빛나는 두 눈...?
+    img.putpixel((13, 20), rgba(160, 120, 200))
+    img.putpixel((18, 20), rgba(160, 120, 200))
+    img.save(OUT / "cave.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     make_tiles()
@@ -320,4 +443,6 @@ if __name__ == "__main__":
     make_lantern()
     make_signpost()
     make_light()
+    make_star()
+    make_cave()
     print("assets/village/ 폴더에 그림을 만들었어요.")

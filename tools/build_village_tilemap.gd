@@ -6,7 +6,7 @@ extends SceneTree
 ## ⚠️ 다시 실행하면 scenes/village_tilemap.tscn을 새로 덮어써요.
 ##    Godot 에디터에서 타일을 직접 칠해서 고쳤다면 다시 실행하지 마세요!
 
-const W := 40  # 맵 가로 칸 수 (한 칸 = 16픽셀)
+const W := 50  # 맵 가로 칸 수 (한 칸 = 16픽셀)
 const H := 24  # 맵 세로 칸 수
 
 # 타일 모음(assets/village/tiles.png)에서 각 타일의 위치
@@ -26,9 +26,23 @@ const TALL_GRASS := Vector2i(4, 1)
 const WATER_TOP := Vector2i(5, 1)
 const FOREST_TUFT := Vector2i(6, 1)
 const FOREST_MUSH := Vector2i(7, 1)
+const BRIDGE_TOP := Vector2i(0, 2)
+const BRIDGE_BOTTOM := Vector2i(1, 2)
+const BRIDGE_TOP_BROKEN_R := Vector2i(2, 2)     # 오른쪽이 부서진 다리 (틈의 왼쪽)
+const BRIDGE_BOTTOM_BROKEN_R := Vector2i(3, 2)
+const BRIDGE_TOP_BROKEN_L := Vector2i(4, 2)     # 왼쪽이 부서진 다리 (틈의 오른쪽)
+const BRIDGE_BOTTOM_BROKEN_L := Vector2i(5, 2)
+const GAP := Vector2i(6, 2)                     # 다리가 끊어진 틈
+const ROCK_GROUND := Vector2i(7, 2)
+const CLIFF := Vector2i(0, 3)
+const ROCK_PEBBLE := Vector2i(1, 3)
 
 ## 부딪히는 타일 (지나갈 수 없어요)
-const SOLID := [WATER, WATER_SPARK, WATER_TOP, FENCE_H, FENCE_V, FENCE_POST, BUSH]
+const SOLID := [WATER, WATER_SPARK, WATER_TOP, FENCE_H, FENCE_V, FENCE_POST, BUSH, CLIFF]
+## 대시로만 건널 수 있는 타일 (충돌 레이어 2)
+const DASH_ONLY := [GAP]
+
+const RIVER_X := 40  # 강이 시작하는 칸 (3칸 너비)
 
 var rng := RandomNumberGenerator.new()
 
@@ -66,7 +80,11 @@ func _initialize() -> void:
 func make_tileset() -> TileSet:
 	var tileset := TileSet.new()
 	tileset.tile_size = Vector2i(16, 16)
+	# 물리 레이어 0: 벽, 물 (충돌 레이어 1)
 	tileset.add_physics_layer()
+	# 물리 레이어 1: 다리 틈 (충돌 레이어 2) - 대시 중에는 무시해요
+	tileset.add_physics_layer()
+	tileset.set_physics_layer_collision_layer(1, 2)
 
 	var source := TileSetAtlasSource.new()
 	source.texture = load("res://assets/village/tiles.png")
@@ -75,14 +93,19 @@ func make_tileset() -> TileSet:
 
 	var square := PackedVector2Array([Vector2(-8, -8), Vector2(8, -8), Vector2(8, 8), Vector2(-8, 8)])
 	var thin_v := PackedVector2Array([Vector2(-3, -8), Vector2(3, -8), Vector2(3, 8), Vector2(-3, 8)])
-	for y in 2:
+	for y in 4:
 		for x in 8:
 			var coords := Vector2i(x, y)
+			if y == 3 and x > 1:
+				continue  # 4줄째는 2칸만 있어요
 			source.create_tile(coords)
+			var data := source.get_tile_data(coords, 0)
 			if coords in SOLID:
-				var data := source.get_tile_data(coords, 0)
 				data.add_collision_polygon(0)
 				data.set_collision_polygon_points(0, 0, thin_v if coords in [FENCE_V, FENCE_POST] else square)
+			elif coords in DASH_ONLY:
+				data.add_collision_polygon(1)
+				data.set_collision_polygon_points(1, 0, square)
 	return tileset
 
 
@@ -90,7 +113,12 @@ func paint_ground(ground: TileMapLayer) -> void:
 	for y in H:
 		for x in W:
 			var tile := GRASS
-			if x >= 29:
+			if x >= RIVER_X + 3:
+				# 강 건너편 바위 지대
+				tile = CLIFF if y <= 6 else (ROCK_PEBBLE if rng.randf() < 0.2 else ROCK_GROUND)
+			elif x >= RIVER_X:
+				tile = WATER_SPARK if rng.randf() < 0.2 else WATER
+			elif x >= 29:
 				# 동쪽 숲
 				var r := rng.randf()
 				tile = FOREST_TUFT if r < 0.15 else (FOREST_MUSH if r < 0.19 else FOREST)
@@ -100,13 +128,21 @@ func paint_ground(ground: TileMapLayer) -> void:
 			ground.set_cell(Vector2i(x, y), 0, tile)
 
 	# 흙길: 큰길(가로), 광장, 집으로 가는 샛길
-	fill_path(ground, 2, 12, 39, 13)   # 큰길 (서쪽 → 동쪽 숲)
+	fill_path(ground, 2, 12, 39, 13)   # 큰길 (서쪽 → 동쪽 숲 → 강)
 	fill_path(ground, 11, 10, 18, 15)  # 광장
 	fill_path(ground, 14, 7, 15, 9)    # 촌장 회관 앞
 	fill_path(ground, 23, 11, 24, 11)  # 토끼네 집 앞
 	fill_path(ground, 6, 14, 7, 20)    # 거북이 할머니 집 앞
 	fill_path(ground, 30, 14, 31, 19)  # 숲속 오솔길
 	fill_path(ground, 32, 19, 36, 20)
+
+	# 부서진 다리 (가운데 칸이 끊어져서 대시로만 건널 수 있어요)
+	ground.set_cell(Vector2i(RIVER_X, 12), 0, BRIDGE_TOP_BROKEN_R)
+	ground.set_cell(Vector2i(RIVER_X, 13), 0, BRIDGE_BOTTOM_BROKEN_R)
+	ground.set_cell(Vector2i(RIVER_X + 1, 12), 0, GAP)
+	ground.set_cell(Vector2i(RIVER_X + 1, 13), 0, GAP)
+	ground.set_cell(Vector2i(RIVER_X + 2, 12), 0, BRIDGE_TOP_BROKEN_L)
+	ground.set_cell(Vector2i(RIVER_X + 2, 13), 0, BRIDGE_BOTTOM_BROKEN_L)
 
 	# 연못
 	for y in range(17, 22):

@@ -6,6 +6,7 @@ extends CanvasLayer
 
 @onready var hearts: HBoxContainer = $Hearts
 @onready var acorn_label: Label = $Acorns/Count
+@onready var star_label: Label = $Stars/Count
 
 
 func _ready() -> void:
@@ -15,6 +16,12 @@ func _ready() -> void:
 		update_hearts(player.hp, player.max_hp)
 	GameState.acorns_changed.connect(update_acorns)
 	update_acorns(GameState.acorns)
+	GameState.stars_changed.connect(update_stars)
+	update_stars(GameState.stars_returned)
+
+
+func update_stars(count: int) -> void:
+	star_label.text = "%d / 3" % count
 
 
 func update_acorns(count: int) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=33 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/village_tilemap.tscn" id="2_tilemap"]
@@ -26,9 +26,13 @@
 [ext_resource type="Texture2D" path="res://assets/baby_rabbit.png" id="24_baby"]
 [ext_resource type="Script" path="res://scripts/turtle_grandma.gd" id="25_turtle_script"]
 [ext_resource type="Texture2D" path="res://assets/turtle_grandma.png" id="26_turtle"]
+[ext_resource type="Script" path="res://scripts/owl_chief.gd" id="27_owl_script"]
+[ext_resource type="PackedScene" path="res://scenes/star.tscn" id="28_star"]
+[ext_resource type="Texture2D" path="res://assets/village/cave.png" id="29_cave"]
+[ext_resource type="Script" path="res://scripts/night_tint.gd" id="30_night_tint"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_h"]
-size = Vector2(672, 16)
+size = Vector2(832, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_v"]
 size = Vector2(16, 416)
@@ -40,11 +44,11 @@ size = Vector2(16, 416)
 [node name="Bounds" type="StaticBody2D" parent="."]
 
 [node name="Top" type="CollisionShape2D" parent="Bounds"]
-position = Vector2(320, -8)
+position = Vector2(400, -8)
 shape = SubResource("RectangleShape2D_bound_h")
 
 [node name="Bottom" type="CollisionShape2D" parent="Bounds"]
-position = Vector2(320, 392)
+position = Vector2(400, 392)
 shape = SubResource("RectangleShape2D_bound_h")
 
 [node name="Left" type="CollisionShape2D" parent="Bounds"]
@@ -52,7 +56,7 @@ position = Vector2(-8, 192)
 shape = SubResource("RectangleShape2D_bound_v")
 
 [node name="Right" type="CollisionShape2D" parent="Bounds"]
-position = Vector2(648, 192)
+position = Vector2(808, 192)
 shape = SubResource("RectangleShape2D_bound_v")
 
 [node name="Objects" type="Node2D" parent="."]
@@ -212,67 +216,89 @@ position = Vector2(540, 170)
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree8" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(628, 180)
+position = Vector2(560, 250)
 
 [node name="Sprite2D" parent="Objects/ForestTree8" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree9" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(560, 250)
+position = Vector2(628, 262)
 
 [node name="Sprite2D" parent="Objects/ForestTree9" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree10" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(628, 262)
+position = Vector2(470, 284)
 
 [node name="Sprite2D" parent="Objects/ForestTree10" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree11" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(470, 284)
+position = Vector2(540, 300)
 
 [node name="Sprite2D" parent="Objects/ForestTree11" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree12" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(540, 300)
+position = Vector2(610, 300)
 
 [node name="Sprite2D" parent="Objects/ForestTree12" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree13" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(610, 300)
+position = Vector2(470, 372)
 
 [node name="Sprite2D" parent="Objects/ForestTree13" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree14" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(470, 372)
+position = Vector2(560, 378)
 
 [node name="Sprite2D" parent="Objects/ForestTree14" index="0"]
 texture = ExtResource("13_tree_dark")
 
 [node name="ForestTree15" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(560, 378)
+position = Vector2(630, 376)
 
 [node name="Sprite2D" parent="Objects/ForestTree15" index="0"]
 texture = ExtResource("13_tree_dark")
 
-[node name="ForestTree16" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(630, 376)
-
-[node name="Sprite2D" parent="Objects/ForestTree16" index="0"]
-texture = ExtResource("13_tree_dark")
-
 [node name="Rock" parent="Objects" instance=ExtResource("12_rock")]
 position = Vector2(505, 62)
+
+[node name="EastTree1" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(712, 260)
+
+[node name="Sprite2D" parent="Objects/EastTree1" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="EastTree2" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(784, 300)
+
+[node name="Sprite2D" parent="Objects/EastTree2" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="EastTree3" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(700, 372)
+
+[node name="Sprite2D" parent="Objects/EastTree3" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="EastTree4" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(770, 376)
+
+[node name="Sprite2D" parent="Objects/EastTree4" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="Rock2" parent="Objects" instance=ExtResource("12_rock")]
+position = Vector2(780, 180)
 
 [node name="Player" parent="Objects" instance=ExtResource("1_player")]
 position = Vector2(80, 210)
 
 [node name="OwlChief" parent="Objects" instance=ExtResource("3_npc")]
 position = Vector2(262, 126)
+script = ExtResource("27_owl_script")
 npc_name = "부엉이 촌장"
 lines = Array[String](["오, 코랄! 무사했구나. 어젯밤 일은 너도 봤겠지?", "하늘의 별 세 개가 그만 숲으로 떨어지고 말았단다.", "별빛이 사라지자 마을은 어둠에 잠기고... 그림자 몬스터들까지 나타났지.", "코랄, 네가 별을 찾아와 줄 수 있겠니? 먼저 동쪽 숲을 살펴보렴."])
 
@@ -309,7 +335,7 @@ texture = ExtResource("26_turtle")
 hframes = 2
 
 [node name="BabyRabbit" parent="Objects" instance=ExtResource("3_npc")]
-position = Vector2(600, 340)
+position = Vector2(628, 72)
 script = ExtResource("23_baby_script")
 npc_name = "아기 토끼"
 home_position = Vector2(428, 190)
@@ -328,6 +354,29 @@ lines = Array[String](["← 반딧불 마을   |   동쪽 숲 →", "(그림자 
 texture = ExtResource("17_sign")
 hframes = 1
 
+[node name="BridgeSign" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(616, 180)
+npc_name = "표지판"
+lines = Array[String](["→ 강 건너: 캄캄한 동굴", "(다리가 부서져 있다... 힘껏 달리면 건널 수 있을지도?)"])
+
+[node name="Sprite2D" parent="Objects/BridgeSign" index="0"]
+texture = ExtResource("17_sign")
+hframes = 1
+
+[node name="DarkCave" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(744, 100)
+npc_name = "캄캄한 동굴"
+lines = Array[String](["동굴 안은 한 치 앞도 안 보일 만큼 캄캄하다...", "안쪽에서 무언가 반짝인 것 같기도 한데...", "(빛이 있으면 들어갈 수 있을 것 같다.)"])
+
+[node name="Sprite2D" parent="Objects/DarkCave" index="0"]
+texture = ExtResource("29_cave")
+hframes = 1
+
+[node name="Star1" parent="Objects" instance=ExtResource("28_star")]
+position = Vector2(584, 320)
+star_number = 1
+pickup_lines = Array[String](["★ 첫 번째 별을 찾았다!", "별빛이 코랄의 몸에 스며든다... 바람처럼 몸이 가벼워졌다!", "(C 또는 Shift 키로 대시할 수 있게 되었다!)", "(대시하면 부서진 다리 같은 틈도 건널 수 있다. 부엉이 촌장에게 별을 가져가자!)"])
+
 [node name="ShadowSlime1" parent="Objects" instance=ExtResource("4_slime")]
 position = Vector2(515, 105)
 
@@ -340,6 +389,9 @@ position = Vector2(596, 236)
 [node name="ShadowSlime4" parent="Objects" instance=ExtResource("4_slime")]
 position = Vector2(515, 355)
 
+[node name="ShadowSlime5" parent="Objects" instance=ExtResource("4_slime")]
+position = Vector2(740, 230)
+
 [node name="Acorn1" parent="Objects" instance=ExtResource("6_acorn")]
 position = Vector2(40, 300)
 
@@ -349,8 +401,15 @@ position = Vector2(596, 84)
 [node name="Acorn3" parent="Objects" instance=ExtResource("6_acorn")]
 position = Vector2(470, 335)
 
+[node name="Acorn4" parent="Objects" instance=ExtResource("6_acorn")]
+position = Vector2(784, 140)
+
+[node name="Acorn5" parent="Objects" instance=ExtResource("6_acorn")]
+position = Vector2(706, 320)
+
 [node name="NightTint" type="CanvasModulate" parent="."]
 color = Color(0.45, 0.5, 0.78, 1)
+script = ExtResource("30_night_tint")
 
 [node name="Fireflies" parent="." instance=ExtResource("7_fireflies")]
 

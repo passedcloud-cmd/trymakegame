@@ -40,7 +40,7 @@ func _physics_process(delta: float) -> void:
 	sprite.frame = int(time * 3.0) % 2
 
 	# 대화 중에는 가만히 있어요.
-	if Dialogue.is_open:
+	if Dialogue.is_busy():
 		return
 
 	velocity = decide_direction(delta) * move_speed + knockback

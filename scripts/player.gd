@@ -21,6 +21,14 @@ signal health_changed(hp: int, max_hp: int)
 ## 맞은 뒤 무적인 시간 (초)
 @export var invincible_time: float = 1.0
 
+@export_group("대시")
+## 대시 속도
+@export var dash_speed: float = 240.0
+## 대시하는 시간 (초)
+@export var dash_time: float = 0.16
+## 대시 후 다시 대시할 수 있을 때까지 기다리는 시간 (초)
+@export var dash_cooldown: float = 0.5
+
 @export_group("그림 줄 번호")
 # 스프라이트 시트(assets/coral.png)에서 방향마다 몇 번째 줄을 쓸지 정해요.
 # 다른 그림으로 바꿀 때 줄 순서가 다르면 이 숫자만 고치면 돼요.
@@ -31,6 +39,7 @@ signal health_changed(hp: int, max_hp: int)
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var tail_hitbox: Area2D = $TailHitbox
 @onready var tail_swipe: Sprite2D = $TailSwipe
+@onready var gap_sensor: Area2D = $GapSensor
 
 var hp := 0
 var facing := Vector2.DOWN       # 코랄이 바라보는 방향
@@ -42,6 +51,11 @@ var invincible_timer := 0.0      # 0보다 크면 무적
 var knockback := Vector2.ZERO    # 맞았을 때 뒤로 밀려나는 힘
 var hit_enemies: Array = []      # 이번 휘두르기에 이미 맞은 몬스터 (한 번에 두 번 맞지 않게)
 var is_dead := false
+var dash_timer := 0.0            # 0보다 크면 지금 대시하는 중
+var dash_cooldown_timer := 0.0
+var dash_direction := Vector2.ZERO
+var dash_extra_time := 0.0       # 틈 위에서 대시가 끝나지 않게 더 간 시간
+var ghost_timer := 0.0
 
 
 func _ready() -> void:
@@ -61,20 +75,27 @@ func _physics_process(delta: float) -> void:
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 
 	# 대화 중에는 움직이지 않아요.
-	if Dialogue.is_open:
+	if Dialogue.is_busy():
 		direction = Vector2.ZERO
-	elif Input.is_action_just_pressed("attack") and cooldown_timer <= 0.0:
+	elif Input.is_action_just_pressed("dash") and can_dash():
+		start_dash(direction)
+	elif Input.is_action_just_pressed("attack") and cooldown_timer <= 0.0 and not is_dashing():
 		start_attack()
 
-	# 방향 × 속도 = 실제로 움직일 빠르기. 꼬리를 휘두르는 동안은 느려져요.
-	var move_speed := speed * (0.4 if attack_timer > 0.0 else 1.0)
-	velocity = direction * move_speed + knockback
+	if is_dashing():
+		# 대시 중에는 정해진 방향으로 빠르게 날아가요.
+		velocity = dash_direction * dash_speed
+	else:
+		# 방향 × 속도 = 실제로 움직일 빠르기. 꼬리를 휘두르는 동안은 느려져요.
+		var move_speed := speed * (0.4 if attack_timer > 0.0 else 1.0)
+		velocity = direction * move_speed + knockback
 	knockback = knockback.move_toward(Vector2.ZERO, 600.0 * delta)
 
 	# 실제로 움직여요. 벽에 부딪히면 알아서 멈추거나 미끄러져요.
 	move_and_slide()
 
 	update_attack(delta)
+	update_dash(delta)
 	update_invincible(delta)
 	update_animation(direction, delta)
 
@@ -113,11 +134,72 @@ func update_attack(delta: float) -> void:
 		tail_swipe.hide()
 
 
+# ── 대시 ───────────────────────────────────────────────
+
+func is_dashing() -> bool:
+	return dash_timer > 0.0
+
+
+func can_dash() -> bool:
+	return GameState.has_dash() and dash_cooldown_timer <= 0.0 and not is_dashing()
+
+
+func start_dash(direction: Vector2) -> void:
+	# 방향키를 누르고 있으면 그쪽으로, 아니면 바라보는 쪽으로 대시해요.
+	dash_direction = direction.normalized() if direction != Vector2.ZERO else facing
+	dash_timer = dash_time
+	dash_cooldown_timer = dash_cooldown
+	dash_extra_time = 0.0
+	ghost_timer = 0.0
+	knockback = Vector2.ZERO
+	# 충돌 레이어 2(다리 틈)를 잠깐 무시해서 틈을 건널 수 있게 해요.
+	set_collision_mask_value(2, false)
+
+
+func update_dash(delta: float) -> void:
+	dash_cooldown_timer -= delta
+	if not is_dashing():
+		return
+
+	# 잔상을 남겨요.
+	ghost_timer -= delta
+	if ghost_timer <= 0.0:
+		ghost_timer = 0.03
+		spawn_ghost()
+
+	dash_timer -= delta
+	if dash_timer > 0.0:
+		return
+	# 틈 한가운데서 대시가 끝나면 빠질 수 있으니, 틈을 벗어날 때까지 조금 더 가요.
+	if gap_sensor.has_overlapping_bodies() and dash_extra_time < 0.3:
+		dash_extra_time += delta
+		dash_timer = 0.001
+		return
+	set_collision_mask_value(2, true)
+
+
+# 코랄 모양의 반투명한 잔상을 만들어요. 점점 사라져요.
+func spawn_ghost() -> void:
+	var ghost := Sprite2D.new()
+	ghost.texture = sprite.texture
+	ghost.hframes = sprite.hframes
+	ghost.vframes = sprite.vframes
+	ghost.frame = sprite.frame
+	ghost.flip_h = sprite.flip_h
+	ghost.modulate = Color(1, 0.85, 0.55, 0.6)
+	get_parent().add_child(ghost)
+	ghost.global_position = sprite.global_position
+	var tween := ghost.create_tween()
+	tween.tween_property(ghost, "modulate:a", 0.0, 0.25)
+	tween.tween_callback(ghost.queue_free)
+
+
 # ── 체력 ───────────────────────────────────────────────
 
 ## 몬스터에게 맞았을 때 불려요. from은 때린 몬스터의 위치예요.
 func take_damage(amount: int, from: Vector2) -> void:
-	if invincible_timer > 0.0 or is_dead or Dialogue.is_open:
+	# 무적이거나, 대시 중이거나, 대화 중이면 맞지 않아요.
+	if invincible_timer > 0.0 or is_dead or is_dashing() or Dialogue.is_busy():
 		return
 	hp = max(hp - amount, 0)
 	health_changed.emit(hp, max_hp)
@@ -152,11 +234,11 @@ func die() -> void:
 	is_dead = true
 	sprite.visible = true
 	tail_swipe.hide()
-	# 천천히 사라진 뒤 게임을 처음부터 다시 시작해요.
+	# 천천히 사라진 뒤 집 앞에서 다시 깨어나요.
+	# 별, 도토리, 퀘스트 진행 상황은 그대로 남아요.
 	var tween := create_tween()
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.8)
 	tween.tween_interval(0.4)
-	tween.tween_callback(GameState.reset)
 	tween.tween_callback(get_tree().reload_current_scene)
 
 
@@ -171,8 +253,8 @@ func update_animation(direction: Vector2, delta: float) -> void:
 		return
 
 	# 좌우로 더 많이 움직이면 옆모습, 아니면 앞/뒷모습
-	# 꼬리를 휘두르는 중에는 방향을 바꾸지 않아요.
-	if attack_timer <= 0.0:
+	# 꼬리를 휘두르거나 대시하는 중에는 방향을 바꾸지 않아요.
+	if attack_timer <= 0.0 and not is_dashing():
 		if absf(direction.x) > absf(direction.y):
 			facing = Vector2.RIGHT if direction.x > 0 else Vector2.LEFT
 			facing_row = row_side
