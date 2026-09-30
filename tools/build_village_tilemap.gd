@@ -180,6 +180,12 @@ func paint_deco(deco: TileMapLayer, ground: TileMapLayer) -> void:
 			Vector2i(34, 9), Vector2i(35, 9), Vector2i(38, 15), Vector2i(33, 23)]:
 		deco.set_cell(cell, 0, BUSH)
 
+	# 강 건너 남쪽: 그림자 곰의 굴로 가는 길 양옆을 덤불로 막아요.
+	# (가운데 두 칸은 그림자 장막이 막고 있어요. 별빛으로 걷어낼 수 있어요.)
+	for y in [22, 23]:
+		for x in [43, 44, 47, 48, 49]:
+			deco.set_cell(Vector2i(x, y), 0, BUSH)
+
 	# 긴 풀 (장식, 지나갈 수 있어요) - 풀밭 위에만 드문드문
 	for i in 40:
 		var cell := Vector2i(rng.randi_range(0, W - 1), rng.randi_range(0, H - 1))

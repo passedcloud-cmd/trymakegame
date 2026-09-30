@@ -18,6 +18,8 @@ func go(scene_path: String, spawn_name: String) -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	Dialogue.cutscene = false
 	tween = create_tween()
 	tween.tween_property(fade, "color:a", 0.0, 0.35)
+	await tween.finished
+	# 화면이 다 밝아진 뒤에 움직일 수 있어요.
+	Dialogue.cutscene = false

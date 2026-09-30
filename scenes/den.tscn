@@ -1,0 +1,99 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/den_tilemap.tscn" id="1_tilemap"]
+[ext_resource type="Script" path="res://scripts/map_bounds.gd" id="2_bounds"]
+[ext_resource type="PackedScene" path="res://scenes/exit_area.tscn" id="3_exit"]
+[ext_resource type="Texture2D" path="res://assets/village/light.png" id="4_light"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="5_player"]
+[ext_resource type="PackedScene" path="res://scenes/shadow_bear.tscn" id="6_bear"]
+[ext_resource type="PackedScene" path="res://scenes/props/tree.tscn" id="7_tree"]
+[ext_resource type="Texture2D" path="res://assets/village/tree_dark.png" id="8_tree_dark"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="9_hud"]
+[ext_resource type="PackedScene" path="res://scenes/boss_bar.tscn" id="10_bossbar"]
+[ext_resource type="Script" path="res://scripts/den.gd" id="11_den"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_h"]
+size = Vector2(416, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_v"]
+size = Vector2(16, 288)
+
+[node name="Den" type="Node2D"]
+script = ExtResource("11_den")
+
+[node name="DenTilemap" parent="." instance=ExtResource("1_tilemap")]
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+script = ExtResource("2_bounds")
+map_size = Vector2(384, 256)
+
+[node name="Top" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(192, -8)
+shape = SubResource("RectangleShape2D_bound_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(192, 264)
+shape = SubResource("RectangleShape2D_bound_h")
+
+[node name="Left" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(-8, 128)
+shape = SubResource("RectangleShape2D_bound_v")
+
+[node name="Right" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(392, 128)
+shape = SubResource("RectangleShape2D_bound_v")
+
+[node name="Entrance" type="Marker2D" parent="." groups=["spawn"]]
+position = Vector2(192, 222)
+
+[node name="ExitToVillage" parent="." instance=ExtResource("3_exit")]
+position = Vector2(192, 252)
+target_scene = "res://scenes/main.tscn"
+target_spawn = "FromDen"
+
+[node name="Moonlight" type="PointLight2D" parent="."]
+position = Vector2(192, 120)
+color = Color(0.6, 0.65, 1, 1)
+energy = 0.5
+texture = ExtResource("4_light")
+texture_scale = 6.0
+
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Objects" instance=ExtResource("5_player")]
+position = Vector2(192, 222)
+
+[node name="ShadowBear" parent="Objects" instance=ExtResource("6_bear")]
+position = Vector2(192, 100)
+
+[node name="Tree1" parent="Objects" instance=ExtResource("7_tree")]
+position = Vector2(56, 64)
+
+[node name="Sprite2D" parent="Objects/Tree1" index="0"]
+texture = ExtResource("8_tree_dark")
+
+[node name="Tree2" parent="Objects" instance=ExtResource("7_tree")]
+position = Vector2(328, 64)
+
+[node name="Sprite2D" parent="Objects/Tree2" index="0"]
+texture = ExtResource("8_tree_dark")
+
+[node name="Tree3" parent="Objects" instance=ExtResource("7_tree")]
+position = Vector2(56, 200)
+
+[node name="Sprite2D" parent="Objects/Tree3" index="0"]
+texture = ExtResource("8_tree_dark")
+
+[node name="Tree4" parent="Objects" instance=ExtResource("7_tree")]
+position = Vector2(328, 200)
+
+[node name="Sprite2D" parent="Objects/Tree4" index="0"]
+texture = ExtResource("8_tree_dark")
+
+[node name="Darkness" type="CanvasModulate" parent="."]
+color = Color(0.32, 0.3, 0.48, 1)
+
+[node name="HUD" parent="." instance=ExtResource("9_hud")]
+
+[node name="BossBar" parent="." instance=ExtResource("10_bossbar")]

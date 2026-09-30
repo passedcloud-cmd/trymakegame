@@ -1,0 +1,69 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/shadow_bear.gd" id="1_bear"]
+[ext_resource type="Texture2D" path="res://assets/boss/shadow_bear.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/boss/shadow_bear_eyes.png" id="3_eyes"]
+[ext_resource type="Texture2D" path="res://assets/village/star_icon.png" id="4_star"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(32, 18)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_contact"]
+radius = 20.0
+
+[sub_resource type="Gradient" id="Gradient_aura"]
+colors = PackedColorArray(0.35, 0.15, 0.5, 0.8, 0.1, 0.05, 0.15, 0)
+
+[node name="ShadowBear" type="CharacterBody2D" groups=["enemy"]]
+motion_mode = 1
+script = ExtResource("1_bear")
+
+[node name="Aura" type="CPUParticles2D" parent="."]
+position = Vector2(0, -20)
+amount = 28
+lifetime = 0.9
+emission_shape = 1
+emission_sphere_radius = 20.0
+direction = Vector2(0, -1)
+spread = 30.0
+gravity = Vector2(0, -25)
+initial_velocity_min = 4.0
+initial_velocity_max = 10.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_aura")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -24)
+hframes = 4
+
+[node name="Eyes" type="Sprite2D" parent="Sprite2D"]
+texture = ExtResource("3_eyes")
+offset = Vector2(0, -24)
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="ContactArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactArea"]
+position = Vector2(0, -18)
+shape = SubResource("CircleShape2D_contact")
+
+[node name="DazedStars" type="Node2D" parent="."]
+position = Vector2(0, -50)
+
+[node name="Star1" type="Sprite2D" parent="DazedStars"]
+position = Vector2(0, -8)
+texture = ExtResource("4_star")
+
+[node name="Star2" type="Sprite2D" parent="DazedStars"]
+position = Vector2(7, 4)
+texture = ExtResource("4_star")
+
+[node name="Star3" type="Sprite2D" parent="DazedStars"]
+position = Vector2(-7, 4)
+texture = ExtResource("4_star")

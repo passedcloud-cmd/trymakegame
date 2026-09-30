@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ending.gd" id="1_ending"]
+
+[sub_resource type="Gradient" id="Gradient_twinkle"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0.95, 0.6, 0, 1, 0.95, 0.6, 1, 1, 0.95, 0.6, 0)
+
+[node name="Ending" type="CanvasLayer"]
+layer = 40
+script = ExtResource("1_ending")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Sky" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.06, 0.07, 0.18, 0.92)
+
+[node name="Twinkles" type="CPUParticles2D" parent="Root"]
+position = Vector2(160, 90)
+amount = 40
+lifetime = 2.5
+preprocess = 2.5
+emission_shape = 3
+emission_rect_extents = Vector2(160, 90)
+gravity = Vector2(0, 0)
+scale_amount_min = 1.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_twinkle")
+
+[node name="Title" type="Label" parent="Root"]
+layout_mode = 0
+offset_top = 30.0
+offset_right = 320.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(1, 0.88, 0.45, 1)
+text = "★ 별똥별 줍는 여우 ★"
+horizontal_alignment = 1
+
+[node name="End" type="Label" parent="Root"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 320.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(1, 0.98, 0.92, 1)
+text = "- 끝 -"
+horizontal_alignment = 1
+
+[node name="Story" type="Label" parent="Root"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 78.0
+offset_right = 300.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(0.85, 0.9, 1, 1)
+text = "밤하늘에 별 세 개가 다시 반짝인다.
+반딧불 마을에 따스한 빛이 돌아왔다.
+고마워, 코랄!"
+horizontal_alignment = 1
+
+[node name="Thanks" type="Label" parent="Root"]
+layout_mode = 0
+offset_top = 134.0
+offset_right = 320.0
+offset_bottom = 150.0
+theme_override_colors/font_color = Color(1, 0.8, 0.6, 1)
+text = "플레이해 주셔서 감사합니다!"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Root"]
+visible = false
+layout_mode = 0
+offset_top = 160.0
+offset_right = 320.0
+offset_bottom = 176.0
+theme_override_colors/font_color = Color(0.6, 0.65, 0.8, 1)
+text = "(Z를 누르면 마을로 돌아가요)"
+horizontal_alignment = 1

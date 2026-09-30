@@ -58,6 +58,8 @@ var dash_cooldown_timer := 0.0
 var dash_direction := Vector2.ZERO
 var dash_extra_time := 0.0       # 틈 위에서 대시가 끝나지 않게 더 간 시간
 var ghost_timer := 0.0
+var shake_strength := 0.0        # 화면 흔들림 세기
+var shake_timer := 0.0
 
 
 func _ready() -> void:
@@ -77,8 +79,8 @@ func move_to_spawn() -> void:
 	for marker in get_tree().get_nodes_in_group("spawn"):
 		if marker.name == GameState.next_spawn:
 			global_position = marker.global_position
-			# 동굴에 들어갈 땐 위쪽(안쪽)을, 나올 땐 아래쪽을 바라봐요.
-			var entering := marker.name == "Entrance"
+			# 새 맵에 들어갈 땐 위쪽(안쪽)을, 동굴에서 나올 땐 아래쪽을 바라봐요.
+			var entering := marker.name in ["Entrance", "FromDen"]
 			facing = Vector2.UP if entering else Vector2.DOWN
 			facing_row = row_up if entering else row_down
 			return
@@ -128,6 +130,7 @@ func _physics_process(delta: float) -> void:
 
 	update_attack(delta)
 	update_dash(delta)
+	update_shake(delta)
 	update_invincible(delta)
 	update_animation(direction, delta)
 
@@ -164,6 +167,22 @@ func update_attack(delta: float) -> void:
 
 	if attack_timer <= 0.0:
 		tail_swipe.hide()
+
+
+# ── 화면 흔들림 ────────────────────────────────────────
+
+## 화면을 흔들어요. (보스가 쿵! 할 때)
+func shake_camera(strength: float, duration: float) -> void:
+	shake_strength = strength
+	shake_timer = duration
+
+
+func update_shake(delta: float) -> void:
+	if shake_timer <= 0.0:
+		camera.offset = Vector2.ZERO
+		return
+	shake_timer -= delta
+	camera.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)).round() * shake_strength
 
 
 # ── 불빛 ───────────────────────────────────────────────

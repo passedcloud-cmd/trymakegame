@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3]
+[gd_scene load_steps=39 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/village_tilemap.tscn" id="2_tilemap"]
@@ -32,6 +32,10 @@
 [ext_resource type="Script" path="res://scripts/night_tint.gd" id="30_night_tint"]
 [ext_resource type="Script" path="res://scripts/map_bounds.gd" id="31_bounds"]
 [ext_resource type="Script" path="res://scripts/cave_entrance.gd" id="32_cave_entrance"]
+[ext_resource type="PackedScene" path="res://scenes/shadow_veil.tscn" id="33_veil"]
+[ext_resource type="PackedScene" path="res://scenes/exit_area.tscn" id="34_exit"]
+[ext_resource type="Script" path="res://scripts/bear_cub.gd" id="35_cub_script"]
+[ext_resource type="Texture2D" path="res://assets/boss/bear_cub.png" id="36_cub"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_h"]
 size = Vector2(832, 16)
@@ -65,6 +69,14 @@ shape = SubResource("RectangleShape2D_bound_v")
 
 [node name="FromCave" type="Marker2D" parent="." groups=["spawn"]]
 position = Vector2(744, 126)
+
+[node name="FromDen" type="Marker2D" parent="." groups=["spawn"]]
+position = Vector2(744, 318)
+
+[node name="ExitToDen" parent="." instance=ExtResource("34_exit")]
+position = Vector2(744, 380)
+target_scene = "res://scenes/den.tscn"
+target_spawn = "Entrance"
 
 [node name="Objects" type="Node2D" parent="."]
 y_sort_enabled = true
@@ -285,18 +297,6 @@ position = Vector2(784, 300)
 [node name="Sprite2D" parent="Objects/EastTree2" index="0"]
 texture = ExtResource("13_tree_dark")
 
-[node name="EastTree3" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(700, 372)
-
-[node name="Sprite2D" parent="Objects/EastTree3" index="0"]
-texture = ExtResource("13_tree_dark")
-
-[node name="EastTree4" parent="Objects" instance=ExtResource("8_tree")]
-position = Vector2(770, 376)
-
-[node name="Sprite2D" parent="Objects/EastTree4" index="0"]
-texture = ExtResource("13_tree_dark")
-
 [node name="Rock2" parent="Objects" instance=ExtResource("12_rock")]
 position = Vector2(780, 180)
 
@@ -414,6 +414,27 @@ position = Vector2(784, 140)
 
 [node name="Acorn5" parent="Objects" instance=ExtResource("6_acorn")]
 position = Vector2(706, 320)
+
+[node name="ShadowVeilGate" parent="Objects" instance=ExtResource("33_veil")]
+position = Vector2(744, 360)
+
+[node name="DenSign" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(712, 330)
+npc_name = "표지판"
+lines = Array[String](["↓ 그림자 곰의 굴", "(무시무시한 기운이 느껴진다... 준비는 됐을까?)"])
+
+[node name="Sprite2D" parent="Objects/DenSign" index="0"]
+texture = ExtResource("17_sign")
+hframes = 1
+
+[node name="BearCub" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(196, 240)
+script = ExtResource("35_cub_script")
+npc_name = "아기 곰"
+
+[node name="Sprite2D" parent="Objects/BearCub" index="0"]
+texture = ExtResource("36_cub")
+hframes = 2
 
 [node name="NightTint" type="CanvasModulate" parent="."]
 color = Color(0.45, 0.5, 0.78, 1)
