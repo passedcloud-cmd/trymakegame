@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/shadow_slime.gd" id="1_slime"]
 [ext_resource type="Texture2D" path="res://assets/shadow_slime.png" id="2_sprite"]
+[ext_resource type="PackedScene" path="res://scenes/enemy_hp_bar.tscn" id="3_hp_bar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(12, 6)
@@ -27,3 +28,6 @@ shape = SubResource("RectangleShape2D_body")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ContactArea"]
 position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_contact")
+
+[node name="HpBar" parent="." instance=ExtResource("3_hp_bar")]
+position = Vector2(0, -6)

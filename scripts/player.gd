@@ -12,8 +12,10 @@ signal health_changed(hp: int, max_hp: int)
 @export_group("전투")
 ## 최대 체력 (하트 개수)
 @export var max_hp: int = 3
-## 꼬리 공격이 몬스터에게 주는 피해
-@export var attack_damage: int = 1
+## 꼬리 공격이 몬스터에게 주는 피해 (기본값)
+@export var attack_damage: int = 10
+## 피해가 매번 이만큼 오르내려요. (10 ± 2 → 8~12)
+@export var attack_damage_variation: int = 2
 ## 꼬리를 휘두르는 시간 (초)
 @export var attack_duration: float = 0.15
 ## 한 번 휘두른 뒤 다시 휘두를 수 있을 때까지 기다리는 시간 (초)
@@ -152,6 +154,11 @@ func start_attack() -> void:
 	tail_swipe.show()
 
 
+## 이번 공격의 피해를 정해요. (예: 8~12 중 하나)
+func roll_damage() -> int:
+	return max(1, attack_damage + randi_range(-attack_damage_variation, attack_damage_variation))
+
+
 func update_attack(delta: float) -> void:
 	cooldown_timer -= delta
 	if attack_timer <= 0.0:
@@ -162,10 +169,14 @@ func update_attack(delta: float) -> void:
 	tail_swipe.modulate.a = clampf(attack_timer / attack_duration, 0.0, 1.0)
 
 	# 공격 판정 안에 있는 몬스터에게 피해를 줘요.
-	for body in tail_hitbox.get_overlapping_bodies():
-		if body.is_in_group("enemy") and body not in hit_enemies:
-			hit_enemies.append(body)
-			body.take_hit(attack_damage, global_position)
+	# 발밑(몸)뿐 아니라 몸통 영역(Area2D)에 닿아도 맞아요. (큰 그림자 곰의 배를 때려도 OK)
+	var targets: Array = tail_hitbox.get_overlapping_bodies()
+	for area in tail_hitbox.get_overlapping_areas():
+		targets.append(area.get_parent())
+	for target in targets:
+		if target.is_in_group("enemy") and target not in hit_enemies:
+			hit_enemies.append(target)
+			target.take_hit(roll_damage(), global_position)
 
 	if attack_timer <= 0.0:
 		tail_swipe.hide()

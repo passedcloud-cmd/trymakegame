@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemy_hp_bar.gd" id="1_bar"]
+
+[node name="HpBar" type="Node2D"]
+z_index = 10
+script = ExtResource("1_bar")
+
+[node name="Back" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -1.0
+offset_right = 8.0
+offset_bottom = 3.0
+mouse_filter = 2
+color = Color(0.08, 0.06, 0.12, 0.9)
+
+[node name="Fill" type="ColorRect" parent="."]
+offset_left = -7.0
+offset_right = 7.0
+offset_bottom = 2.0
+mouse_filter = 2
+color = Color(0.45, 0.9, 0.4, 1)

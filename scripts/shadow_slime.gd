@@ -2,7 +2,7 @@ extends CharacterBody2D
 ## 그림자 슬라임: 어슬렁거리다가 코랄이 가까이 오면 쫓아와요.
 
 ## 체력 (꼬리에 몇 번 맞으면 사라질지)
-@export var max_hp: int = 2
+@export var max_hp: int = 20
 ## 움직이는 속도
 @export var move_speed: float = 28.0
 ## 코랄이 이 거리(픽셀) 안에 들어오면 쫓아와요.
@@ -18,6 +18,7 @@ const ACORN_SCENE := preload("res://scenes/acorn.tscn")
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var contact_area: Area2D = $ContactArea
+@onready var hp_bar: Node2D = $HpBar
 
 var hp := 0
 var time := 0.0
@@ -80,6 +81,8 @@ func take_hit(amount: int, from: Vector2) -> void:
 		return
 	hp -= amount
 	Sound.play("hit")
+	hp_bar.set_ratio(float(hp) / max_hp)
+	FloatingText.damage(self, global_position + Vector2(0, -10), amount)
 	knockback = (global_position - from).normalized() * 200.0
 
 	# 빨갛게 번쩍!
@@ -93,6 +96,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 
 func die() -> void:
 	is_dying = true
+	hp_bar.hide()
 	Sound.play("pop")
 	if randf() < acorn_drop_chance:
 		var acorn := ACORN_SCENE.instantiate()

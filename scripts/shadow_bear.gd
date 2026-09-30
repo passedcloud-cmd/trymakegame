@@ -11,7 +11,7 @@ signal health_changed(hp: int, max_hp: int)
 ## 쓰러지면 알려줘요.
 signal defeated
 
-@export var max_hp: int = 10
+@export var max_hp: int = 100
 ## 평소에 코랄 쪽으로 걸어오는 속도
 @export var walk_speed: float = 28.0
 ## 돌진 속도
@@ -291,6 +291,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 
 	hp = max(hp - amount, 0)
 	health_changed.emit(hp, max_hp)
+	FloatingText.damage(self, global_position + Vector2(randf_range(-10, 10), -40), amount, Color(1, 0.85, 0.4))
 	Sound.play("hit", 0.0, 0.8)
 	knockback = from.direction_to(global_position) * 120.0
 	var flash := create_tween()
