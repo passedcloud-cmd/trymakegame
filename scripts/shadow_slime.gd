@@ -79,6 +79,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 	if is_dying:
 		return
 	hp -= amount
+	Sound.play("hit")
 	knockback = (global_position - from).normalized() * 200.0
 
 	# 빨갛게 번쩍!
@@ -92,6 +93,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 
 func die() -> void:
 	is_dying = true
+	Sound.play("pop")
 	if randf() < acorn_drop_chance:
 		var acorn := ACORN_SCENE.instantiate()
 		acorn.position = position

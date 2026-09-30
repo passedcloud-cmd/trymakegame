@@ -8,6 +8,7 @@ extends CanvasLayer
 ## scene_path 맵으로 이동해서, 이름이 spawn_name인 출발 지점에 코랄을 세워요.
 func go(scene_path: String, spawn_name: String) -> void:
 	Dialogue.cutscene = true
+	Sound.play("whoosh", 0.0, 1.0, 0.0)
 	var tween := create_tween()
 	tween.tween_property(fade, "color:a", 1.0, 0.35)
 	await tween.finished

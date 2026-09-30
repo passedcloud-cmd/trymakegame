@@ -178,6 +178,7 @@ func do_attack(player: Node2D) -> void:
 	match next_attack:
 		"charge":
 			charge_direction = global_position.direction_to(player.global_position)
+			Sound.play("roar", -6.0, 1.4)
 			sprite.frame = FRAME_CHARGE
 			enter(State.CHARGE)
 		"orbs":
@@ -194,6 +195,7 @@ func do_attack(player: Node2D) -> void:
 func fire_orbs(player: Node2D) -> void:
 	if state == State.DEFEATED or not is_instance_valid(player):
 		return
+	Sound.play("orb")
 	var count := 7 if phase_two else 5
 	var spread := deg_to_rad(80.0)
 	var center := (player.global_position - global_position).angle()
@@ -212,6 +214,8 @@ func slam(player: Node2D) -> void:
 	squash.tween_property(sprite, "scale", Vector2(1.2, 0.8), 0.08)
 	squash.tween_property(sprite, "scale", Vector2.ONE, 0.2)
 	player.shake_camera(3.0, 0.3)
+	Sound.play("slam")
+	get_tree().create_timer(0.8).timeout.connect(Sound.play.bind("spike"))
 	var spots := [player.global_position + Vector2(0, 4)]
 	for i in (4 if phase_two else 2):
 		spots.append(player.global_position + Vector2(0, 4) + Vector2.from_angle(randf() * TAU) * randf_range(20.0, 44.0))
@@ -226,6 +230,7 @@ func crash() -> void:
 	var player := get_player()
 	if player:
 		player.shake_camera(4.0, 0.4)
+	Sound.play("boom")
 	FloatingText.spawn(self, global_position + Vector2(0, -52), "쾅!", Color(1, 0.85, 0.5))
 	knockback = -charge_direction * 80.0
 	daze(crash_time)
@@ -242,6 +247,7 @@ func set_armored(on: bool) -> void:
 
 
 func daze(duration: float) -> void:
+	Sound.play("daze", 0.0, 1.0, 0.0)
 	set_armored(false)
 	sprite.frame = FRAME_DAZED
 	sprite.offset = Vector2(0, -24)
@@ -276,6 +282,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 	hit_cooldown = 0.25
 
 	if armored:
+		Sound.play("clink")
 		FloatingText.spawn(self, global_position + Vector2(0, -52), "팅!", Color(0.8, 0.8, 1))
 		if not shown_armor_hint:
 			shown_armor_hint = true
@@ -284,6 +291,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 
 	hp = max(hp - amount, 0)
 	health_changed.emit(hp, max_hp)
+	Sound.play("hit", 0.0, 0.8)
 	knockback = from.direction_to(global_position) * 120.0
 	var flash := create_tween()
 	flash.tween_property(sprite, "modulate", Color(1, 0.4, 0.4), 0.05)
@@ -297,6 +305,7 @@ func take_hit(amount: int, from: Vector2) -> void:
 
 func start_phase_two() -> void:
 	phase_two = true
+	Sound.play("roar", 0.0, 1.0, 0.0)
 	FloatingText.spawn(self, global_position + Vector2(0, -52), "크아아앙!", Color(1, 0.5, 0.6))
 	# 그림자 슬라임 두 마리를 불러요.
 	for offset in [Vector2(-60, 20), Vector2(60, 20)]:

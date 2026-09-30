@@ -110,6 +110,7 @@ func _physics_process(delta: float) -> void:
 		direction = Vector2.ZERO
 	elif Input.is_action_just_pressed("starlight") and GameState.has_starlight():
 		GameState.starlight_on = not GameState.starlight_on
+		Sound.play("starlight_on" if GameState.starlight_on else "starlight_off", 0.0, 1.0, 0.0)
 		update_light(true)
 	elif Input.is_action_just_pressed("dash") and can_dash():
 		start_dash(direction)
@@ -138,6 +139,7 @@ func _physics_process(delta: float) -> void:
 # ── 공격 ───────────────────────────────────────────────
 
 func start_attack() -> void:
+	Sound.play("swipe")
 	attack_timer = attack_duration
 	cooldown_timer = attack_cooldown
 	hit_enemies.clear()
@@ -229,6 +231,7 @@ func can_dash() -> bool:
 
 func start_dash(direction: Vector2) -> void:
 	# 방향키를 누르고 있으면 그쪽으로, 아니면 바라보는 쪽으로 대시해요.
+	Sound.play("dash")
 	dash_direction = direction.normalized() if direction != Vector2.ZERO else facing
 	dash_timer = dash_time
 	dash_cooldown_timer = dash_cooldown
@@ -286,6 +289,7 @@ func take_damage(amount: int, from: Vector2) -> void:
 		return
 	hp = max(hp - amount, 0)
 	health_changed.emit(hp, max_hp)
+	Sound.play("hurt")
 	knockback = (global_position - from).normalized() * 180.0
 	invincible_timer = invincible_time
 	if hp <= 0:
@@ -294,12 +298,14 @@ func take_damage(amount: int, from: Vector2) -> void:
 
 ## 체력을 회복해요. (최대 체력을 넘지 않아요)
 func heal(amount: int) -> void:
+	Sound.play("heal", 0.0, 1.0, 0.0)
 	hp = min(hp + amount, max_hp)
 	health_changed.emit(hp, max_hp)
 
 
 ## 최대 체력을 늘리고, 늘어난 만큼 체력도 채워줘요.
 func increase_max_hp(amount: int) -> void:
+	Sound.play("heart_up", 0.0, 1.0, 0.0)
 	max_hp += amount
 	hp += amount
 	health_changed.emit(hp, max_hp)
@@ -315,6 +321,7 @@ func update_invincible(delta: float) -> void:
 
 func die() -> void:
 	is_dead = true
+	Sound.play("faint", 0.0, 1.0, 0.0)
 	sprite.visible = true
 	tail_swipe.hide()
 	# 천천히 사라진 뒤 이 맵에 마지막으로 들어온 곳에서 다시 깨어나요.

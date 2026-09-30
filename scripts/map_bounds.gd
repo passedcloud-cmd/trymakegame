@@ -4,7 +4,11 @@ extends StaticBody2D
 
 ## 맵 크기 (픽셀)
 @export var map_size: Vector2 = Vector2(800, 384)
+## 이 맵에 들어오면 트는 배경 음악 (assets/music/ 안의 파일 이름). 비워 두면 그대로 둬요.
+@export var music: String = ""
 
 
 func _ready() -> void:
 	add_to_group("map_bounds")
+	if music != "":
+		Sound.play_music(music)

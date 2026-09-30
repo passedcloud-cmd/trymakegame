@@ -60,6 +60,7 @@ func return_star(number: int) -> void:
 
 	# 연출: 별이 코랄에게서 하늘로 날아올라요.
 	Dialogue.cutscene = true
+	Sound.play("star_rise", 0.0, 1.0, 0.0)
 	await fly_star_to_sky(get_player().global_position)
 	GameState.flags["star%d_returned" % number] = true
 	GameState.stars_returned += 1

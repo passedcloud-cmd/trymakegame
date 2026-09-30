@@ -21,6 +21,7 @@ func _process(delta: float) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
+		Sound.play("pickup")
 		GameState.acorns += 1
 		GameState.flags[pickup_key()] = true
 		queue_free()

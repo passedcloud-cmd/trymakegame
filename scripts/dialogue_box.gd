@@ -10,6 +10,19 @@ signal choice_made(index: int)
 ## 글자가 1초에 몇 개씩 나타날지 정해요.
 @export var chars_per_second: float = 30.0
 
+## 캐릭터마다 목소리(삐삐 소리) 높이가 달라요. 1이 보통, 클수록 높은 목소리예요.
+const VOICE_PITCH := {
+	"부엉이 촌장": 0.8,
+	"너구리 상인": 1.1,
+	"겁많은 토끼": 1.35,
+	"아기 토끼": 1.6,
+	"거북이 할머니": 0.7,
+	"아기 곰": 1.3,
+	"그림자 곰": 0.45,
+	"캄캄한 동굴": 0.6,
+	"★ 별": 1.5,
+}
+
 @onready var name_panel: Panel = $NamePanel
 @onready var name_label: Label = $NamePanel/NameLabel
 @onready var choice_panel: Panel = $ChoicePanel
@@ -28,6 +41,7 @@ var shown_chars := 0.0
 var arrow_time := 0.0
 var choices: Array = []
 var choice_index := 0
+var voice_pitch := 1.0
 
 
 ## 대화나 연출 중이라 모두 멈춰야 하면 true를 돌려줘요.
@@ -48,6 +62,7 @@ func start(speaker: String, new_lines: Array) -> void:
 	line_index = 0
 	choices = []
 	name_label.text = speaker
+	voice_pitch = VOICE_PITCH.get(speaker, 1.0)
 	# 이름 길이에 맞춰 이름표 너비를 바꿔요.
 	name_panel.size.x = text_width(name_label, speaker) + 12
 	is_open = true
@@ -126,7 +141,13 @@ func _process(delta: float) -> void:
 	if is_typing():
 		# 타자 치듯 글자를 조금씩 늘려요.
 		shown_chars += chars_per_second * delta
+		var before := text_label.visible_characters
 		text_label.visible_characters = int(shown_chars)
+		# 두 글자마다 삐삐 목소리를 내요. (띄어쓰기에서는 조용히)
+		var shown := text_label.visible_characters
+		if shown != before and shown % 2 == 0 and shown <= text_label.text.length() \
+				and text_label.text[shown - 1] != " ":
+			Sound.play("blip", 0.0, voice_pitch, 0.04)
 	else:
 		# 다 나오면 ▼ 표시를 깜빡여서 "다음"을 알려줘요.
 		if not choices.is_empty():
@@ -147,11 +168,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down"):
 			var step := -1 if event.is_action_pressed("ui_up") else 1
 			choice_index = wrapi(choice_index + step, 0, choices.size())
+			Sound.play("cursor", 0.0, 1.0, 0.0)
 			show_choices()
 			get_viewport().set_input_as_handled()
 		elif event.is_action_pressed("interact"):
 			get_viewport().set_input_as_handled()
 			var picked := choice_index
+			Sound.play("select", 0.0, 1.0, 0.0)
 			choices = []
 			choice_panel.hide()
 			close()

@@ -26,6 +26,7 @@ size = Vector2(16, 416)
 [node name="Bounds" type="StaticBody2D" parent="."]
 script = ExtResource("2_bounds")
 map_size = Vector2(640, 384)
+music = "cave"
 
 [node name="Top" type="CollisionShape2D" parent="Bounds"]
 position = Vector2(320, -8)

@@ -27,6 +27,7 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
+	Sound.play("star", 0.0, 1.0, 0.0)
 	GameState.flags["star%d_found" % star_number] = true
 	# 별마다 새 능력을 줘요.
 	match star_number:

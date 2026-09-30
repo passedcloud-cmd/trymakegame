@@ -13,6 +13,8 @@ const STAR3_LINES: Array[String] = [
 
 
 func _ready() -> void:
+	# 싸움 전에는 조용히... (곰이 으르렁대면 보스 음악이 시작돼요)
+	Sound.play_music("ending" if GameState.flags.get("bear_saved", false) else "")
 	if GameState.flags.get("bear_saved", false):
 		# 이미 곰을 구했어요. 별을 아직 안 주웠으면 별만 다시 놓아요.
 		bear.queue_free()
@@ -36,14 +38,17 @@ func intro() -> void:
 			"(그림자 곰이 앞을 가로막았다!)",
 			"(그림자 갑옷에는 꼬리가 통하지 않을 것 같다... 별빛을 비추면 어떨까?)",
 		]
+	Sound.play("roar", 0.0, 1.0, 0.0)
 	Dialogue.start("그림자 곰", intro_lines)
 	await Dialogue.finished
+	Sound.play_music("boss", 0.3)
 	boss_bar.show()
 	bear.start_fight()
 
 
 func _on_bear_defeated() -> void:
 	boss_bar.hide()
+	Sound.play_music("", 1.5)
 	Dialogue.cutscene = true
 	# 남은 슬라임과 그림자 공격을 모두 치워요.
 	for node in get_tree().get_nodes_in_group("enemy"):
@@ -63,6 +68,7 @@ func _on_bear_defeated() -> void:
 	])
 	await Dialogue.finished
 	GameState.flags["bear_saved"] = true
+	Sound.play_music("ending", 2.0)
 	spawn_star(bear.global_position + Vector2(0, 24))
 
 
