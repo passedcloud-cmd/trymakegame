@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/grass.png" id="2_grass"]
+[ext_resource type="Texture2D" path="res://assets/rock.png" id="3_rock"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
-size = Vector2(32, 32)
+size = Vector2(26, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
 size = Vector2(480, 16)
@@ -13,13 +15,14 @@ size = Vector2(16, 270)
 
 [node name="Main" type="Node2D"]
 
-[node name="Ground" type="ColorRect" parent="."]
+[node name="Ground" type="TextureRect" parent="."]
 offset_left = -240.0
 offset_top = -135.0
 offset_right = 240.0
 offset_bottom = 135.0
 mouse_filter = 2
-color = Color(0.2, 0.38, 0.27, 1)
+texture = ExtResource("2_grass")
+stretch_mode = 1
 
 [node name="Walls" type="Node2D" parent="."]
 
@@ -75,17 +78,17 @@ color = Color(0.13, 0.2, 0.15, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Right"]
 shape = SubResource("RectangleShape2D_wall_v")
 
-[node name="Rock" type="StaticBody2D" parent="."]
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Rock" type="StaticBody2D" parent="Objects"]
 position = Vector2(64, -24)
 
-[node name="Body" type="ColorRect" parent="Rock"]
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-color = Color(0.55, 0.55, 0.6, 1)
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Rock"]
+texture = ExtResource("3_rock")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Rock"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Rock"]
+position = Vector2(0, 7)
 shape = SubResource("RectangleShape2D_rock")
 
-[node name="Player" parent="." instance=ExtResource("1_player")]
+[node name="Player" parent="Objects" instance=ExtResource("1_player")]
