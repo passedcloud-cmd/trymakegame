@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Texture2D" path="res://assets/grass.png" id="2_grass"]
@@ -7,6 +7,15 @@
 [ext_resource type="Texture2D" path="res://assets/owl_chief.png" id="5_owl"]
 [ext_resource type="PackedScene" path="res://scenes/shadow_slime.tscn" id="6_slime"]
 [ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="7_hud"]
+[ext_resource type="Script" path="res://scripts/raccoon_merchant.gd" id="8_raccoon_script"]
+[ext_resource type="Texture2D" path="res://assets/raccoon_merchant.png" id="9_raccoon"]
+[ext_resource type="Script" path="res://scripts/timid_rabbit.gd" id="10_rabbit_script"]
+[ext_resource type="Texture2D" path="res://assets/timid_rabbit.png" id="11_rabbit"]
+[ext_resource type="Script" path="res://scripts/baby_rabbit.gd" id="12_baby_script"]
+[ext_resource type="Texture2D" path="res://assets/baby_rabbit.png" id="13_baby"]
+[ext_resource type="Script" path="res://scripts/turtle_grandma.gd" id="14_turtle_script"]
+[ext_resource type="Texture2D" path="res://assets/turtle_grandma.png" id="15_turtle"]
+[ext_resource type="PackedScene" path="res://scenes/acorn.tscn" id="16_acorn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
 size = Vector2(26, 14)
@@ -114,5 +123,50 @@ position = Vector2(-150, 90)
 
 [node name="ShadowSlime3" parent="Objects" instance=ExtResource("6_slime")]
 position = Vector2(170, -90)
+
+[node name="RaccoonMerchant" parent="Objects" instance=ExtResource("4_npc")]
+position = Vector2(-136, -84)
+script = ExtResource("8_raccoon_script")
+npc_name = "너구리 상인"
+
+[node name="Sprite2D" parent="Objects/RaccoonMerchant" index="0"]
+texture = ExtResource("9_raccoon")
+hframes = 2
+
+[node name="TimidRabbit" parent="Objects" instance=ExtResource("4_npc")]
+position = Vector2(8, -88)
+script = ExtResource("10_rabbit_script")
+npc_name = "겁많은 토끼"
+
+[node name="Sprite2D" parent="Objects/TimidRabbit" index="0"]
+texture = ExtResource("11_rabbit")
+hframes = 2
+
+[node name="TurtleGrandma" parent="Objects" instance=ExtResource("4_npc")]
+position = Vector2(-176, -28)
+script = ExtResource("14_turtle_script")
+npc_name = "거북이 할머니"
+blink_interval = 4.0
+
+[node name="Sprite2D" parent="Objects/TurtleGrandma" index="0"]
+texture = ExtResource("15_turtle")
+hframes = 2
+
+[node name="BabyRabbit" parent="Objects" instance=ExtResource("4_npc")]
+position = Vector2(216, 112)
+script = ExtResource("12_baby_script")
+npc_name = "아기 토끼"
+home_position = Vector2(34, -82)
+blink_interval = 2.0
+
+[node name="Sprite2D" parent="Objects/BabyRabbit" index="0"]
+texture = ExtResource("13_baby")
+hframes = 2
+
+[node name="Acorn" parent="Objects" instance=ExtResource("16_acorn")]
+position = Vector2(96, 112)
+
+[node name="Acorn2" parent="Objects" instance=ExtResource("16_acorn")]
+position = Vector2(-208, 110)
 
 [node name="HUD" parent="." instance=ExtResource("7_hud")]

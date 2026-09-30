@@ -5,6 +5,7 @@ extends CanvasLayer
 @export var heart_empty: Texture2D
 
 @onready var hearts: HBoxContainer = $Hearts
+@onready var acorn_label: Label = $Acorns/Count
 
 
 func _ready() -> void:
@@ -12,6 +13,12 @@ func _ready() -> void:
 	if player:
 		player.health_changed.connect(update_hearts)
 		update_hearts(player.hp, player.max_hp)
+	GameState.acorns_changed.connect(update_acorns)
+	update_acorns(GameState.acorns)
+
+
+func update_acorns(count: int) -> void:
+	acorn_label.text = "× %d" % count
 
 
 func update_hearts(hp: int, max_hp: int) -> void:

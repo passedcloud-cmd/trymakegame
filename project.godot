@@ -12,6 +12,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+GameState="*res://scripts/game_state.gd"
 Dialogue="*res://scenes/dialogue_box.tscn"
 
 [display]

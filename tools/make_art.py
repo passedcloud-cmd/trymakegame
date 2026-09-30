@@ -317,6 +317,164 @@ def make_tail_swipe():
     img.save(OUT / "tail_swipe.png")
 
 
+def make_blinking_npc(filename, colors, rows_open, rows_closed, overlay=None):
+    """눈 뜬 모습 / 눈 감은 모습 2칸짜리 NPC 그림을 만들어요.
+    rows_*는 왼쪽 절반(8칸)만 적으면 좌우 대칭으로 완성돼요."""
+    sheet = Image.new("RGBA", (32, 16))
+    for i, half in enumerate([rows_open, rows_closed]):
+        rows = mirror(half)
+        if overlay:
+            rows = with_overlay(rows, overlay)
+        for y, row in enumerate(rows):
+            for x, ch in enumerate(row):
+                sheet.putpixel((i * 16 + x, y), colors[ch])
+    sheet.save(OUT / filename)
+
+
+def make_raccoon():
+    """너구리 상인 (앞치마를 두른 떠돌이 상인)."""
+    colors = {
+        ".": (0, 0, 0, 0), "o": (40, 32, 36, 255), "g": (140, 135, 140, 255),
+        "l": (200, 196, 196, 255), "m": (62, 58, 68, 255), "w": (245, 242, 235, 255),
+        "k": (20, 18, 24, 255), "n": (30, 26, 30, 255), "r": (186, 92, 70, 255),
+        "y": (230, 190, 90, 255),
+    }
+    top = [
+        "........",
+        ".oo.....",
+        ".ogo....",
+        ".oggoooo",
+        "..oggggg",
+        ".oglllgg",
+        ".ommmmlg",
+    ]
+    bottom = [
+        ".ogllwww",
+        "..oglwwn",
+        "...ogggg",
+        "..ogrrrr",
+        "..ogrrrr",
+        "..ogryrr",
+        "...oggo.",
+        "...oooo.",
+    ]
+    make_blinking_npc("raccoon_merchant.png", colors,
+                      top + [".omwkmlg"] + bottom, top + [".omkkmlg"] + bottom)
+
+
+def make_rabbit():
+    """겁많은 토끼 (식은땀 한 방울)."""
+    colors = {
+        ".": (0, 0, 0, 0), "o": (60, 44, 50, 255), "f": (246, 238, 228, 255),
+        "s": (214, 200, 192, 255), "p": (240, 160, 172, 255), "k": (27, 27, 42, 255),
+        "n": (230, 120, 140, 255), "b": (250, 190, 196, 255), "d": (120, 190, 240, 255),
+    }
+    top = [
+        "...oo...",
+        "..ofpo..",
+        "..ofpo..",
+        "..ofpo..",
+        "..offooo",
+        ".offffff",
+        ".offffff",
+    ]
+    bottom = [
+        "..offfff",
+        "..osffff",
+        ".osfffff",
+        ".osfffff",
+        "..osffff",
+        "...offo.",
+        "...oooo.",
+    ]
+    sweat = {(4, 14): "d", (5, 14): "d"}
+    make_blinking_npc("timid_rabbit.png", colors,
+                      top + [".offkfff", ".obfkffn"] + bottom,
+                      top + [".offffff", ".obkkffn"] + bottom, sweat)
+
+
+def make_baby_rabbit():
+    """아기 토끼 (작은 토끼)."""
+    colors = {
+        ".": (0, 0, 0, 0), "o": (60, 44, 50, 255), "f": (246, 238, 228, 255),
+        "s": (214, 200, 192, 255), "p": (240, 160, 172, 255), "k": (27, 27, 42, 255),
+        "n": (230, 120, 140, 255), "b": (250, 190, 196, 255),
+    }
+    top = [
+        "........",
+        "........",
+        "........",
+        "...oo...",
+        "..opo...",
+        "..opo...",
+        "..ofoooo",
+        ".offffff",
+        ".offffff",
+    ]
+    bottom = [
+        "..offfff",
+        "..osffff",
+        "...offo.",
+        "...oooo.",
+        "........",
+    ]
+    make_blinking_npc("baby_rabbit.png", colors,
+                      top + [".offkfff", ".offkffn"] + bottom,
+                      top + [".offffff", ".offkkfn"] + bottom)
+
+
+def make_turtle():
+    """거북이 할머니 (동그란 안경을 쓴 할머니)."""
+    colors = {
+        ".": (0, 0, 0, 0), "o": (34, 44, 34, 255), "h": (150, 190, 120, 255),
+        "H": (112, 150, 92, 255), "s": (120, 85, 60, 255), "S": (164, 122, 80, 255),
+        "q": (222, 178, 70, 255), "k": (27, 27, 42, 255), "y": (228, 208, 150, 255),
+        "w": (236, 236, 230, 255), "v": (150, 110, 170, 255),
+    }
+    top = [
+        ".....ooo",
+        "....owww",
+        "...ohhhh",
+        "..ohhhhh",
+        "..oqqqhh",
+    ]
+    bottom = [
+        "..oqqqhh",
+        "..ohhhhh",
+        "...oHhhh",
+        ".osovvvv",
+        "ossSovyy",
+        "osSsoyyy",
+        "ossSoyyy",
+        ".osoohyy",
+        "..ohho..",
+        "..oooo..",
+    ]
+    make_blinking_npc("turtle_grandma.png", colors,
+                      top + ["..oqkqhh"] + bottom, top + ["..oqHqhh"] + bottom)
+
+
+def make_acorn():
+    """도토리 (8x8)."""
+    rows = [
+        "...oo...",
+        ".oooooo.",
+        "occcccco",
+        "oCCCCCCo",
+        ".ohaaao.",
+        ".oaaaao.",
+        "..oaao..",
+        "...oo...",
+    ]
+    colors = {".": (0, 0, 0, 0), "o": (48, 30, 24, 255), "c": (110, 70, 40, 255),
+              "C": (140, 95, 55, 255), "a": (205, 140, 70, 255), "h": (240, 190, 115, 255)}
+    img = Image.new("RGBA", (8, 8))
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            img.putpixel((x, y), colors[ch])
+    img.save(OUT / "acorn.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     make_fox()
@@ -327,4 +485,9 @@ if __name__ == "__main__":
     make_slime()
     make_hearts()
     make_tail_swipe()
+    make_raccoon()
+    make_rabbit()
+    make_baby_rabbit()
+    make_turtle()
+    make_acorn()
     print("assets/ 폴더에 그림을 만들었어요.")

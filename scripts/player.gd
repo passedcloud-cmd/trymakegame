@@ -45,6 +45,8 @@ var is_dead := false
 
 
 func _ready() -> void:
+	# 퀘스트 보상으로 늘어난 하트도 더해요.
+	max_hp += GameState.bonus_hearts
 	hp = max_hp
 	tail_swipe.hide()
 
@@ -125,6 +127,19 @@ func take_damage(amount: int, from: Vector2) -> void:
 		die()
 
 
+## 체력을 회복해요. (최대 체력을 넘지 않아요)
+func heal(amount: int) -> void:
+	hp = min(hp + amount, max_hp)
+	health_changed.emit(hp, max_hp)
+
+
+## 최대 체력을 늘리고, 늘어난 만큼 체력도 채워줘요.
+func increase_max_hp(amount: int) -> void:
+	max_hp += amount
+	hp += amount
+	health_changed.emit(hp, max_hp)
+
+
 func update_invincible(delta: float) -> void:
 	if invincible_timer <= 0.0:
 		return
@@ -141,6 +156,7 @@ func die() -> void:
 	var tween := create_tween()
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.8)
 	tween.tween_interval(0.4)
+	tween.tween_callback(GameState.reset)
 	tween.tween_callback(get_tree().reload_current_scene)
 
 

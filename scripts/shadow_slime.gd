@@ -9,6 +9,10 @@ extends CharacterBody2D
 @export var chase_range: float = 72.0
 ## 코랄에게 닿았을 때 주는 피해 (하트 개수)
 @export var damage: int = 1
+## 사라질 때 도토리를 떨어뜨릴 확률 (1.0 = 100%)
+@export_range(0.0, 1.0) var acorn_drop_chance: float = 1.0
+
+const ACORN_SCENE := preload("res://scenes/acorn.tscn")
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var contact_area: Area2D = $ContactArea
@@ -82,6 +86,10 @@ func take_hit(amount: int, from: Vector2) -> void:
 
 func die() -> void:
 	is_dying = true
+	if randf() < acorn_drop_chance:
+		var acorn := ACORN_SCENE.instantiate()
+		acorn.position = position
+		get_parent().add_child.call_deferred(acorn)
 	# 더 이상 부딪히지 않게 충돌을 꺼요.
 	$CollisionShape2D.set_deferred("disabled", true)
 	# 납작해지면서 사라져요.
