@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/spit.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/spit.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="Shape_main"]
+radius = 3.0
+
+[node name="Spit" type="Area2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 0)
+texture = ExtResource("2_tex")
+hframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0)
+shape = SubResource("Shape_main")

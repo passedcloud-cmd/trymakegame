@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/boss.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/boss.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(44, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(42, 28)
+
+[node name="Boss" type="CharacterBody2D" groups=["enemy", "boss"]]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_script")
+max_hp = 260
+shard_drop = 40
+heart_drop_chance = 0.0
+knockback_power = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -24.0)
+texture = ExtResource("2_tex")
+hframes = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -16.0)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(0, -14.0)
+shape = SubResource("RectangleShape2D_hurt")

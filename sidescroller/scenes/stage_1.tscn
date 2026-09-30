@@ -1,0 +1,192 @@
+[gd_scene load_steps=19 format=4]
+
+[ext_resource type="Script" path="res://scripts/stage.gd" id="1_hfdmh"]
+[ext_resource type="Texture2D" path="res://assets/bg_forest_far.png" id="2_ybch3"]
+[ext_resource type="Texture2D" path="res://assets/bg_forest_near.png" id="3_con43"]
+[ext_resource type="TileSet" path="res://assets/tileset.tres" id="4_ylsql"]
+[ext_resource type="PackedScene" path="res://scenes/spikes.tscn" id="5_2tptg"]
+[ext_resource type="Script" path="res://scripts/spikes.gd" id="6_klss1"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/sign.tscn" id="7_hech3"]
+[ext_resource type="Script" path="res://scripts/npcs/npc.gd" id="8_jm8fe"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/crawler.tscn" id="9_jab33"]
+[ext_resource type="Script" path="res://scripts/enemies/crawler.gd" id="10_t0jcf"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/charger.tscn" id="11_vcwji"]
+[ext_resource type="Script" path="res://scripts/enemies/charger.gd" id="12_2cv1h"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="13_cx1nk"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="14_ruip7"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="15_p1nbd"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="16_8gnl3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ukbe4"]
+size = Vector2(16, 624)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cisvy"]
+size = Vector2(16, 624)
+
+[node name="Stage1" type="Node2D"]
+script = ExtResource("1_hfdmh")
+
+[node name="Background" type="Node2D" parent="."]
+z_index = -10
+
+[node name="Far" type="Parallax2D" parent="Background"]
+scroll_scale = Vector2(0.15, 0)
+repeat_size = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/Far"]
+texture = ExtResource("2_ybch3")
+centered = false
+
+[node name="Near" type="Parallax2D" parent="Background"]
+scroll_scale = Vector2(0.4, 0)
+repeat_size = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Background/Near"]
+texture = ExtResource("3_con43")
+centered = false
+
+[node name="Ground" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAAoAAgAAAAGAAAAAAApAAgAAAAGAAAAAAAqAAgAAAAGAAAAAAArAAgAAAAGAAAAAAAsAAgAAAAGAAAAAAAtAAgAAAAGAAAAAABYAAgAAAAGAAAAAABZAAgAAAAGAAAAAABaAAgAAAAGAAAAAABbAAgAAAAGAAAAAABcAAgAAAAGAAAAAABdAAgAAAAGAAAAAAASAAkAAAACAAAAAAATAAkAAAAAAAAAAAAUAAkAAAAAAAAAAAAVAAkAAAADAAAAAABHAAkAAAACAAAAAABIAAkAAAADAAAAAAASAAoAAAAEAAAAAAATAAoAAAABAAAAAAAUAAoAAAABAAAAAAAVAAoAAAAFAAAAAABGAAoAAAACAAAAAABHAAoAAAABAAAAAABIAAoAAAABAAAAAABJAAoAAAADAAAAAAAAAAsAAAAAAAAAAAABAAsAAAAAAAAAAAACAAsAAAAAAAAAAAADAAsAAAAAAAAAAAAEAAsAAAAAAAAAAAAFAAsAAAAAAAAAAAAGAAsAAAAAAAAAAAAHAAsAAAAAAAAAAAAIAAsAAAAAAAAAAAAJAAsAAAAAAAAAAAAKAAsAAAAAAAAAAAALAAsAAAAAAAAAAAAMAAsAAAAAAAAAAAANAAsAAAAAAAAAAAAOAAsAAAAAAAAAAAAPAAsAAAAAAAAAAAAQAAsAAAAAAAAAAAARAAsAAAAAAAAAAAASAAsAAAABAAAAAAATAAsAAAABAAAAAAAUAAsAAAABAAAAAAAVAAsAAAABAAAAAAAWAAsAAAAAAAAAAAAXAAsAAAAAAAAAAAAYAAsAAAADAAAAAAAcAAsAAAACAAAAAAAdAAsAAAAAAAAAAAAeAAsAAAAAAAAAAAAfAAsAAAAAAAAAAAAgAAsAAAAAAAAAAAAhAAsAAAAAAAAAAAAiAAsAAAAAAAAAAAAjAAsAAAAAAAAAAAAkAAsAAAAAAAAAAAAlAAsAAAAAAAAAAAAmAAsAAAAAAAAAAAAnAAsAAAAAAAAAAAAoAAsAAAAAAAAAAAApAAsAAAAAAAAAAAAqAAsAAAAAAAAAAAArAAsAAAAAAAAAAAAsAAsAAAAAAAAAAAAtAAsAAAAAAAAAAAAuAAsAAAAAAAAAAAAvAAsAAAAAAAAAAAAwAAsAAAAAAAAAAAAxAAsAAAAAAAAAAAAyAAsAAAAAAAAAAAAzAAsAAAAAAAAAAAA0AAsAAAAAAAAAAAA1AAsAAAAAAAAAAAA2AAsAAAAAAAAAAAA3AAsAAAAAAAAAAAA4AAsAAAAAAAAAAAA5AAsAAAAAAAAAAAA6AAsAAAAAAAAAAAA7AAsAAAAAAAAAAAA8AAsAAAADAAAAAABAAAsAAAACAAAAAABBAAsAAAAAAAAAAABCAAsAAAAAAAAAAABDAAsAAAAAAAAAAABEAAsAAAAAAAAAAABFAAsAAAAAAAAAAABGAAsAAAABAAAAAABHAAsAAAABAAAAAABIAAsAAAABAAAAAABJAAsAAAABAAAAAABKAAsAAAAAAAAAAABLAAsAAAAAAAAAAABMAAsAAAAAAAAAAABNAAsAAAAAAAAAAABOAAsAAAAAAAAAAABPAAsAAAAAAAAAAABQAAsAAAAAAAAAAABRAAsAAAAAAAAAAABSAAsAAAAAAAAAAABTAAsAAAAAAAAAAABUAAsAAAAAAAAAAABVAAsAAAAAAAAAAABWAAsAAAAAAAAAAABXAAsAAAAAAAAAAABYAAsAAAAAAAAAAABZAAsAAAAAAAAAAABaAAsAAAAAAAAAAABbAAsAAAAAAAAAAABcAAsAAAAAAAAAAABdAAsAAAAAAAAAAABeAAsAAAAAAAAAAABfAAsAAAAAAAAAAABgAAsAAAAAAAAAAABhAAsAAAAAAAAAAABiAAsAAAAAAAAAAABjAAsAAAAAAAAAAABkAAsAAAAAAAAAAABlAAsAAAAAAAAAAABmAAsAAAAAAAAAAABnAAsAAAAAAAAAAABoAAsAAAAAAAAAAABpAAsAAAAAAAAAAABqAAsAAAAAAAAAAABrAAsAAAAAAAAAAABsAAsAAAAAAAAAAABtAAsAAAAAAAAAAABuAAsAAAAAAAAAAABvAAsAAAAAAAAAAABwAAsAAAAAAAAAAABxAAsAAAAAAAAAAAByAAsAAAAAAAAAAABzAAsAAAAAAAAAAAB0AAsAAAAAAAAAAAB1AAsAAAAAAAAAAAB2AAsAAAAAAAAAAAB3AAsAAAAAAAAAAAAAAAwAAAABAAAAAAABAAwAAAABAAAAAAACAAwAAAABAAAAAAADAAwAAAABAAAAAAAEAAwAAAABAAAAAAAFAAwAAAABAAAAAAAGAAwAAAABAAAAAAAHAAwAAAABAAAAAAAIAAwAAAABAAAAAAAJAAwAAAABAAAAAAAKAAwAAAABAAAAAAALAAwAAAABAAAAAAAMAAwAAAABAAAAAAANAAwAAAABAAAAAAAOAAwAAAABAAAAAAAPAAwAAAABAAAAAAAQAAwAAAABAAAAAAARAAwAAAABAAAAAAASAAwAAAABAAAAAAATAAwAAAABAAAAAAAUAAwAAAABAAAAAAAVAAwAAAABAAAAAAAWAAwAAAABAAAAAAAXAAwAAAABAAAAAAAYAAwAAAAFAAAAAAAcAAwAAAAEAAAAAAAdAAwAAAABAAAAAAAeAAwAAAABAAAAAAAfAAwAAAABAAAAAAAgAAwAAAABAAAAAAAhAAwAAAABAAAAAAAiAAwAAAABAAAAAAAjAAwAAAABAAAAAAAkAAwAAAABAAAAAAAlAAwAAAABAAAAAAAmAAwAAAABAAAAAAAnAAwAAAABAAAAAAAoAAwAAAABAAAAAAApAAwAAAABAAAAAAAqAAwAAAABAAAAAAArAAwAAAABAAAAAAAsAAwAAAABAAAAAAAtAAwAAAABAAAAAAAuAAwAAAABAAAAAAAvAAwAAAABAAAAAAAwAAwAAAABAAAAAAAxAAwAAAABAAAAAAAyAAwAAAABAAAAAAAzAAwAAAABAAAAAAA0AAwAAAABAAAAAAA1AAwAAAABAAAAAAA2AAwAAAABAAAAAAA3AAwAAAABAAAAAAA4AAwAAAABAAAAAAA5AAwAAAABAAAAAAA6AAwAAAABAAAAAAA7AAwAAAABAAAAAAA8AAwAAAAFAAAAAABAAAwAAAAEAAAAAABBAAwAAAABAAAAAABCAAwAAAABAAAAAABDAAwAAAABAAAAAABEAAwAAAABAAAAAABFAAwAAAABAAAAAABGAAwAAAABAAAAAABHAAwAAAABAAAAAABIAAwAAAABAAAAAABJAAwAAAABAAAAAABKAAwAAAABAAAAAABLAAwAAAABAAAAAABMAAwAAAABAAAAAABNAAwAAAABAAAAAABOAAwAAAABAAAAAABPAAwAAAABAAAAAABQAAwAAAABAAAAAABRAAwAAAABAAAAAABSAAwAAAABAAAAAABTAAwAAAABAAAAAABUAAwAAAABAAAAAABVAAwAAAABAAAAAABWAAwAAAABAAAAAABXAAwAAAABAAAAAABYAAwAAAABAAAAAABZAAwAAAABAAAAAABaAAwAAAABAAAAAABbAAwAAAABAAAAAABcAAwAAAABAAAAAABdAAwAAAABAAAAAABeAAwAAAABAAAAAABfAAwAAAABAAAAAABgAAwAAAABAAAAAABhAAwAAAABAAAAAABiAAwAAAABAAAAAABjAAwAAAABAAAAAABkAAwAAAABAAAAAABlAAwAAAABAAAAAABmAAwAAAABAAAAAABnAAwAAAABAAAAAABoAAwAAAABAAAAAABpAAwAAAABAAAAAABqAAwAAAABAAAAAABrAAwAAAABAAAAAABsAAwAAAABAAAAAABtAAwAAAABAAAAAABuAAwAAAABAAAAAABvAAwAAAABAAAAAABwAAwAAAABAAAAAABxAAwAAAABAAAAAAByAAwAAAABAAAAAABzAAwAAAABAAAAAAB0AAwAAAABAAAAAAB1AAwAAAABAAAAAAB2AAwAAAABAAAAAAB3AAwAAAABAAAAAAAAAA0AAAABAAAAAAABAA0AAAABAAAAAAACAA0AAAABAAAAAAADAA0AAAABAAAAAAAEAA0AAAABAAAAAAAFAA0AAAABAAAAAAAGAA0AAAABAAAAAAAHAA0AAAABAAAAAAAIAA0AAAABAAAAAAAJAA0AAAABAAAAAAAKAA0AAAABAAAAAAALAA0AAAABAAAAAAAMAA0AAAABAAAAAAANAA0AAAABAAAAAAAOAA0AAAABAAAAAAAPAA0AAAABAAAAAAAQAA0AAAABAAAAAAARAA0AAAABAAAAAAASAA0AAAABAAAAAAATAA0AAAABAAAAAAAUAA0AAAABAAAAAAAVAA0AAAABAAAAAAAWAA0AAAABAAAAAAAXAA0AAAABAAAAAAAYAA0AAAAFAAAAAAAcAA0AAAAEAAAAAAAdAA0AAAABAAAAAAAeAA0AAAABAAAAAAAfAA0AAAABAAAAAAAgAA0AAAABAAAAAAAhAA0AAAABAAAAAAAiAA0AAAABAAAAAAAjAA0AAAABAAAAAAAkAA0AAAABAAAAAAAlAA0AAAABAAAAAAAmAA0AAAABAAAAAAAnAA0AAAABAAAAAAAoAA0AAAABAAAAAAApAA0AAAABAAAAAAAqAA0AAAABAAAAAAArAA0AAAABAAAAAAAsAA0AAAABAAAAAAAtAA0AAAABAAAAAAAuAA0AAAABAAAAAAAvAA0AAAABAAAAAAAwAA0AAAABAAAAAAAxAA0AAAABAAAAAAAyAA0AAAABAAAAAAAzAA0AAAABAAAAAAA0AA0AAAABAAAAAAA1AA0AAAABAAAAAAA2AA0AAAABAAAAAAA3AA0AAAABAAAAAAA4AA0AAAABAAAAAAA5AA0AAAABAAAAAAA6AA0AAAABAAAAAAA7AA0AAAABAAAAAAA8AA0AAAAFAAAAAABAAA0AAAAEAAAAAABBAA0AAAABAAAAAABCAA0AAAABAAAAAABDAA0AAAABAAAAAABEAA0AAAABAAAAAABFAA0AAAABAAAAAABGAA0AAAABAAAAAABHAA0AAAABAAAAAABIAA0AAAABAAAAAABJAA0AAAABAAAAAABKAA0AAAABAAAAAABLAA0AAAABAAAAAABMAA0AAAABAAAAAABNAA0AAAABAAAAAABOAA0AAAABAAAAAABPAA0AAAABAAAAAABQAA0AAAABAAAAAABRAA0AAAABAAAAAABSAA0AAAABAAAAAABTAA0AAAABAAAAAABUAA0AAAABAAAAAABVAA0AAAABAAAAAABWAA0AAAABAAAAAABXAA0AAAABAAAAAABYAA0AAAABAAAAAABZAA0AAAABAAAAAABaAA0AAAABAAAAAABbAA0AAAABAAAAAABcAA0AAAABAAAAAABdAA0AAAABAAAAAABeAA0AAAABAAAAAABfAA0AAAABAAAAAABgAA0AAAABAAAAAABhAA0AAAABAAAAAABiAA0AAAABAAAAAABjAA0AAAABAAAAAABkAA0AAAABAAAAAABlAA0AAAABAAAAAABmAA0AAAABAAAAAABnAA0AAAABAAAAAABoAA0AAAABAAAAAABpAA0AAAABAAAAAABqAA0AAAABAAAAAABrAA0AAAABAAAAAABsAA0AAAABAAAAAABtAA0AAAABAAAAAABuAA0AAAABAAAAAABvAA0AAAABAAAAAABwAA0AAAABAAAAAABxAA0AAAABAAAAAAByAA0AAAABAAAAAABzAA0AAAABAAAAAAB0AA0AAAABAAAAAAB1AA0AAAABAAAAAAB2AA0AAAABAAAAAAB3AA0AAAABAAAAAAA=")
+tile_set = ExtResource("4_ylsql")
+
+[node name="Deco" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAASAAgAAAAHAAAAAAAVAAgAAAAHAAAAAABHAAgAAAAIAAAAAABIAAgAAAAHAAAAAABJAAkAAAAIAAAAAAAAAAoAAAAHAAAAAAADAAoAAAAIAAAAAAAJAAoAAAAHAAAAAAANAAoAAAAIAAAAAAAjAAoAAAAIAAAAAAApAAoAAAAIAAAAAAAqAAoAAAAHAAAAAAAsAAoAAAAHAAAAAAAuAAoAAAAHAAAAAAAyAAoAAAAHAAAAAAA1AAoAAAAHAAAAAAA4AAoAAAAHAAAAAAA6AAoAAAAIAAAAAABCAAoAAAAHAAAAAABDAAoAAAAIAAAAAABEAAoAAAAIAAAAAABFAAoAAAAIAAAAAABQAAoAAAAIAAAAAABRAAoAAAAHAAAAAABTAAoAAAAHAAAAAABaAAoAAAAHAAAAAABdAAoAAAAHAAAAAABeAAoAAAAIAAAAAABlAAoAAAAHAAAAAABrAAoAAAAHAAAAAAByAAoAAAAHAAAAAAB3AAoAAAAHAAAAAAA=")
+tile_set = ExtResource("4_ylsql")
+collision_enabled = false
+
+[node name="SideWalls" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="Left" type="CollisionShape2D" parent="SideWalls"]
+position = Vector2(-8, -88)
+shape = SubResource("RectangleShape2D_ukbe4")
+
+[node name="Right" type="CollisionShape2D" parent="SideWalls"]
+position = Vector2(1928, -88)
+shape = SubResource("RectangleShape2D_cisvy")
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Spikes" type="Area2D" parent="Props" groups=["hazard"] instance=ExtResource("5_2tptg")]
+position = Vector2(1352, 168)
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("6_klss1")
+
+[node name="@Area2D@14" type="Area2D" parent="Props" groups=["hazard"] instance=ExtResource("5_2tptg")]
+position = Vector2(1368, 168)
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("6_klss1")
+
+[node name="@Area2D@15" type="Area2D" parent="Props" groups=["hazard"] instance=ExtResource("5_2tptg")]
+position = Vector2(1384, 168)
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("6_klss1")
+
+[node name="NPCs" type="Node2D" parent="."]
+
+[node name="Sign" type="Area2D" parent="NPCs" instance=ExtResource("7_hech3")]
+position = Vector2(88, 176)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("8_jm8fe")
+npc_name = "표지판"
+lines = Array[String](["← → 방향키로 걷고, Z(또는 스페이스)로 점프해요.", "Z를 짧게 누르면 낮게, 길게 누르면 높이 뛰어요."])
+icon_height = 26.0
+
+[node name="@Area2D@8" type="Area2D" parent="NPCs" instance=ExtResource("7_hech3")]
+position = Vector2(376, 176)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("8_jm8fe")
+npc_name = "표지판"
+lines = Array[String](["앞에 구덩이가 있어요! 점프로 건너요.", "떨어지면 가면(체력)이 하나 깨지고, 마지막으로 밟은 땅에서 다시 시작해요."])
+icon_height = 26.0
+
+[node name="@Area2D@9" type="Area2D" parent="NPCs" instance=ExtResource("7_hech3")]
+position = Vector2(504, 176)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("8_jm8fe")
+npc_name = "표지판"
+lines = Array[String](["X로 검을 휘둘러요. ↑를 누른 채 X는 위로 베기!", "공중에서 ↓를 누른 채 X로 아래를 베면, 맞았을 때 통통 튀어 올라요."])
+icon_height = 26.0
+
+[node name="@Area2D@12" type="Area2D" parent="NPCs" instance=ExtResource("7_hech3")]
+position = Vector2(824, 176)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("8_jm8fe")
+npc_name = "표지판"
+lines = Array[String](["뿔딱정벌레는 눈이 빨개지면 곧 돌진해요!", "C(또는 Shift)로 대시하면 피할 수 있어요. 대시하는 동안은 다치지 않아요.", "돌진한 뒤 어지러워할 때가 공격할 기회예요."])
+icon_height = 26.0
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Crawler" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(680, 128)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="@CharacterBody2D@6" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(1448, 128)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="@CharacterBody2D@7" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(232, 176)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="@CharacterBody2D@10" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(600, 176)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="@CharacterBody2D@11" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(776, 176)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="Charger" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("11_vcwji")]
+position = Vector2(920, 176)
+collision_layer = 4
+script = ExtResource("12_2cv1h")
+max_hp = 40
+shard_drop = 6
+knockback_power = 60.0
+
+[node name="@CharacterBody2D@13" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(1256, 176)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="@CharacterBody2D@16" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("11_vcwji")]
+position = Vector2(1608, 176)
+collision_layer = 4
+script = ExtResource("12_2cv1h")
+max_hp = 40
+shard_drop = 6
+knockback_power = 60.0
+
+[node name="@CharacterBody2D@17" type="CharacterBody2D" parent="Enemies" groups=["enemy"] instance=ExtResource("9_jab33")]
+position = Vector2(1768, 176)
+collision_layer = 4
+script = ExtResource("10_t0jcf")
+
+[node name="Player" type="CharacterBody2D" parent="." groups=["player"] instance=ExtResource("13_cx1nk")]
+z_index = 2
+position = Vector2(40, 176)
+collision_layer = 2
+floor_snap_length = 4.0
+script = ExtResource("14_ruip7")
+
+[node name="HUD" type="CanvasLayer" parent="." instance=ExtResource("15_p1nbd")]
+layer = 5
+script = ExtResource("16_8gnl3")

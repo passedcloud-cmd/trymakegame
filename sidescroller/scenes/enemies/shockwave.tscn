@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/shockwave.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/shockwave.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="Shape_main"]
+size = Vector2(12, 12)
+
+[node name="Shockwave" type="Area2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -8)
+texture = ExtResource("2_tex")
+hframes = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6)
+shape = SubResource("Shape_main")
