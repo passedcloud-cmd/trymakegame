@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/village/lantern.png" id="1_tex"]
+[ext_resource type="Texture2D" path="res://assets/village/light.png" id="2_light"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pole"]
+size = Vector2(4, 4)
+
+[node name="Lantern" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_tex")
+offset = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_pole")
+
+[node name="Light" type="PointLight2D" parent="."]
+position = Vector2(0, -25)
+color = Color(1, 0.7, 0.4, 1)
+energy = 0.8
+texture = ExtResource("2_light")
+texture_scale = 1.7

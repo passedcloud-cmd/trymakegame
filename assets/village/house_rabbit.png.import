@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctdd8mba2udem"
-path="res://.godot/imported/grass.png-a207bda4a53e32c7645a41ec6d1c234e.ctex"
+uid="uid://bk15unbbpkdnm"
+path="res://.godot/imported/house_rabbit.png-cb22c9efc1231bb411ea8114b3ed2781.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/grass.png"
-dest_files=["res://.godot/imported/grass.png-a207bda4a53e32c7645a41ec6d1c234e.ctex"]
+source_file="res://assets/village/house_rabbit.png"
+dest_files=["res://.godot/imported/house_rabbit.png-cb22c9efc1231bb411ea8114b3ed2781.ctex"]
 
 [params]
 

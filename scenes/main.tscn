@@ -1,172 +1,357 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
-[ext_resource type="Texture2D" path="res://assets/grass.png" id="2_grass"]
-[ext_resource type="Texture2D" path="res://assets/rock.png" id="3_rock"]
-[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="4_npc"]
-[ext_resource type="Texture2D" path="res://assets/owl_chief.png" id="5_owl"]
-[ext_resource type="PackedScene" path="res://scenes/shadow_slime.tscn" id="6_slime"]
-[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="7_hud"]
-[ext_resource type="Script" path="res://scripts/raccoon_merchant.gd" id="8_raccoon_script"]
-[ext_resource type="Texture2D" path="res://assets/raccoon_merchant.png" id="9_raccoon"]
-[ext_resource type="Script" path="res://scripts/timid_rabbit.gd" id="10_rabbit_script"]
-[ext_resource type="Texture2D" path="res://assets/timid_rabbit.png" id="11_rabbit"]
-[ext_resource type="Script" path="res://scripts/baby_rabbit.gd" id="12_baby_script"]
-[ext_resource type="Texture2D" path="res://assets/baby_rabbit.png" id="13_baby"]
-[ext_resource type="Script" path="res://scripts/turtle_grandma.gd" id="14_turtle_script"]
-[ext_resource type="Texture2D" path="res://assets/turtle_grandma.png" id="15_turtle"]
-[ext_resource type="PackedScene" path="res://scenes/acorn.tscn" id="16_acorn"]
+[ext_resource type="PackedScene" path="res://scenes/village_tilemap.tscn" id="2_tilemap"]
+[ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="3_npc"]
+[ext_resource type="PackedScene" path="res://scenes/shadow_slime.tscn" id="4_slime"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/acorn.tscn" id="6_acorn"]
+[ext_resource type="PackedScene" path="res://scenes/fireflies.tscn" id="7_fireflies"]
+[ext_resource type="PackedScene" path="res://scenes/props/tree.tscn" id="8_tree"]
+[ext_resource type="PackedScene" path="res://scenes/props/house.tscn" id="9_house"]
+[ext_resource type="PackedScene" path="res://scenes/props/stall.tscn" id="10_stall"]
+[ext_resource type="PackedScene" path="res://scenes/props/lantern.tscn" id="11_lantern"]
+[ext_resource type="PackedScene" path="res://scenes/props/rock.tscn" id="12_rock"]
+[ext_resource type="Texture2D" path="res://assets/village/tree_dark.png" id="13_tree_dark"]
+[ext_resource type="Texture2D" path="res://assets/village/house_owl.png" id="14_house_owl"]
+[ext_resource type="Texture2D" path="res://assets/village/house_rabbit.png" id="15_house_rabbit"]
+[ext_resource type="Texture2D" path="res://assets/village/house_turtle.png" id="16_house_turtle"]
+[ext_resource type="Texture2D" path="res://assets/village/signpost.png" id="17_sign"]
+[ext_resource type="Texture2D" path="res://assets/owl_chief.png" id="18_owl"]
+[ext_resource type="Script" path="res://scripts/raccoon_merchant.gd" id="19_raccoon_script"]
+[ext_resource type="Texture2D" path="res://assets/raccoon_merchant.png" id="20_raccoon"]
+[ext_resource type="Script" path="res://scripts/timid_rabbit.gd" id="21_rabbit_script"]
+[ext_resource type="Texture2D" path="res://assets/timid_rabbit.png" id="22_rabbit"]
+[ext_resource type="Script" path="res://scripts/baby_rabbit.gd" id="23_baby_script"]
+[ext_resource type="Texture2D" path="res://assets/baby_rabbit.png" id="24_baby"]
+[ext_resource type="Script" path="res://scripts/turtle_grandma.gd" id="25_turtle_script"]
+[ext_resource type="Texture2D" path="res://assets/turtle_grandma.png" id="26_turtle"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
-size = Vector2(26, 14)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_h"]
+size = Vector2(672, 16)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
-size = Vector2(512, 16)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
-size = Vector2(16, 270)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bound_v"]
+size = Vector2(16, 416)
 
 [node name="Main" type="Node2D"]
 
-[node name="Ground" type="TextureRect" parent="."]
-offset_left = -240.0
-offset_top = -135.0
-offset_right = 240.0
-offset_bottom = 135.0
-mouse_filter = 2
-texture = ExtResource("2_grass")
-stretch_mode = 1
+[node name="VillageTilemap" parent="." instance=ExtResource("2_tilemap")]
 
-[node name="Walls" type="Node2D" parent="."]
+[node name="Bounds" type="StaticBody2D" parent="."]
 
-[node name="Top" type="StaticBody2D" parent="Walls"]
-position = Vector2(0, -143)
+[node name="Top" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(320, -8)
+shape = SubResource("RectangleShape2D_bound_h")
 
-[node name="Body" type="ColorRect" parent="Walls/Top"]
-offset_left = -256.0
-offset_top = -8.0
-offset_right = 256.0
-offset_bottom = 8.0
-color = Color(0.13, 0.2, 0.15, 1)
+[node name="Bottom" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(320, 392)
+shape = SubResource("RectangleShape2D_bound_h")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Top"]
-shape = SubResource("RectangleShape2D_wall_h")
+[node name="Left" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(-8, 192)
+shape = SubResource("RectangleShape2D_bound_v")
 
-[node name="Bottom" type="StaticBody2D" parent="Walls"]
-position = Vector2(0, 143)
-
-[node name="Body" type="ColorRect" parent="Walls/Bottom"]
-offset_left = -256.0
-offset_top = -8.0
-offset_right = 256.0
-offset_bottom = 8.0
-color = Color(0.13, 0.2, 0.15, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Bottom"]
-shape = SubResource("RectangleShape2D_wall_h")
-
-[node name="Left" type="StaticBody2D" parent="Walls"]
-position = Vector2(-248, 0)
-
-[node name="Body" type="ColorRect" parent="Walls/Left"]
-offset_left = -8.0
-offset_top = -135.0
-offset_right = 8.0
-offset_bottom = 135.0
-color = Color(0.13, 0.2, 0.15, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Left"]
-shape = SubResource("RectangleShape2D_wall_v")
-
-[node name="Right" type="StaticBody2D" parent="Walls"]
-position = Vector2(248, 0)
-
-[node name="Body" type="ColorRect" parent="Walls/Right"]
-offset_left = -8.0
-offset_top = -135.0
-offset_right = 8.0
-offset_bottom = 135.0
-color = Color(0.13, 0.2, 0.15, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Right"]
-shape = SubResource("RectangleShape2D_wall_v")
+[node name="Right" type="CollisionShape2D" parent="Bounds"]
+position = Vector2(648, 192)
+shape = SubResource("RectangleShape2D_bound_v")
 
 [node name="Objects" type="Node2D" parent="."]
 y_sort_enabled = true
 
-[node name="Rock" type="StaticBody2D" parent="Objects"]
-position = Vector2(64, -24)
+[node name="CoralHouse" parent="Objects" instance=ExtResource("9_house")]
+position = Vector2(80, 192)
 
-[node name="Sprite2D" type="Sprite2D" parent="Objects/Rock"]
-texture = ExtResource("3_rock")
+[node name="OwlHall" parent="Objects" instance=ExtResource("9_house")]
+position = Vector2(240, 112)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Rock"]
-position = Vector2(0, 7)
-shape = SubResource("RectangleShape2D_rock")
+[node name="Sprite2D" parent="Objects/OwlHall" index="0"]
+texture = ExtResource("14_house_owl")
+
+[node name="RabbitHouse" parent="Objects" instance=ExtResource("9_house")]
+position = Vector2(384, 176)
+
+[node name="Sprite2D" parent="Objects/RabbitHouse" index="0"]
+texture = ExtResource("15_house_rabbit")
+
+[node name="TurtleHouse" parent="Objects" instance=ExtResource("9_house")]
+position = Vector2(112, 320)
+
+[node name="Sprite2D" parent="Objects/TurtleHouse" index="0"]
+texture = ExtResource("16_house_turtle")
+
+[node name="Stall" parent="Objects" instance=ExtResource("10_stall")]
+position = Vector2(340, 258)
+
+[node name="Lantern1" parent="Objects" instance=ExtResource("11_lantern")]
+position = Vector2(120, 190)
+
+[node name="Lantern2" parent="Objects" instance=ExtResource("11_lantern")]
+position = Vector2(312, 156)
+
+[node name="Lantern3" parent="Objects" instance=ExtResource("11_lantern")]
+position = Vector2(170, 262)
+
+[node name="Lantern4" parent="Objects" instance=ExtResource("11_lantern")]
+position = Vector2(352, 190)
+
+[node name="Lantern5" parent="Objects" instance=ExtResource("11_lantern")]
+position = Vector2(300, 262)
+
+[node name="Tree1" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(20, 40)
+
+[node name="Tree2" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(60, 36)
+
+[node name="Tree3" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(100, 44)
+
+[node name="Tree4" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(140, 38)
+
+[node name="Tree5" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(180, 44)
+
+[node name="Tree6" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(296, 40)
+
+[node name="Tree7" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(336, 36)
+
+[node name="Tree8" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(376, 44)
+
+[node name="Tree9" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(416, 38)
+
+[node name="Tree10" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(16, 90)
+
+[node name="Tree11" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(16, 130)
+
+[node name="Tree12" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(16, 250)
+
+[node name="Tree13" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(16, 300)
+
+[node name="Tree14" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(16, 350)
+
+[node name="Tree15" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(24, 384)
+
+[node name="Tree16" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(64, 382)
+
+[node name="Tree17" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(360, 384)
+
+[node name="Tree18" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(400, 380)
+
+[node name="Tree19" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(436, 384)
+
+[node name="Tree20" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(184, 100)
+
+[node name="Tree21" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(330, 104)
+
+[node name="Tree22" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(172, 304)
+
+[node name="Tree23" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(420, 300)
+
+[node name="Tree24" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(380, 340)
+
+[node name="ForestTree1" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(476, 44)
+
+[node name="Sprite2D" parent="Objects/ForestTree1" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree2" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(540, 40)
+
+[node name="Sprite2D" parent="Objects/ForestTree2" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree3" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(612, 48)
+
+[node name="Sprite2D" parent="Objects/ForestTree3" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree4" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(572, 100)
+
+[node name="Sprite2D" parent="Objects/ForestTree4" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree5" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(628, 128)
+
+[node name="Sprite2D" parent="Objects/ForestTree5" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree6" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(486, 150)
+
+[node name="Sprite2D" parent="Objects/ForestTree6" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree7" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(540, 170)
+
+[node name="Sprite2D" parent="Objects/ForestTree7" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree8" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(628, 180)
+
+[node name="Sprite2D" parent="Objects/ForestTree8" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree9" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(560, 250)
+
+[node name="Sprite2D" parent="Objects/ForestTree9" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree10" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(628, 262)
+
+[node name="Sprite2D" parent="Objects/ForestTree10" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree11" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(470, 284)
+
+[node name="Sprite2D" parent="Objects/ForestTree11" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree12" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(540, 300)
+
+[node name="Sprite2D" parent="Objects/ForestTree12" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree13" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(610, 300)
+
+[node name="Sprite2D" parent="Objects/ForestTree13" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree14" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(470, 372)
+
+[node name="Sprite2D" parent="Objects/ForestTree14" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree15" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(560, 378)
+
+[node name="Sprite2D" parent="Objects/ForestTree15" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="ForestTree16" parent="Objects" instance=ExtResource("8_tree")]
+position = Vector2(630, 376)
+
+[node name="Sprite2D" parent="Objects/ForestTree16" index="0"]
+texture = ExtResource("13_tree_dark")
+
+[node name="Rock" parent="Objects" instance=ExtResource("12_rock")]
+position = Vector2(505, 62)
 
 [node name="Player" parent="Objects" instance=ExtResource("1_player")]
+position = Vector2(80, 210)
 
-[node name="OwlChief" parent="Objects" instance=ExtResource("4_npc")]
-position = Vector2(-64, -40)
+[node name="OwlChief" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(262, 126)
 npc_name = "부엉이 촌장"
 lines = Array[String](["오, 코랄! 무사했구나. 어젯밤 일은 너도 봤겠지?", "하늘의 별 세 개가 그만 숲으로 떨어지고 말았단다.", "별빛이 사라지자 마을은 어둠에 잠기고... 그림자 몬스터들까지 나타났지.", "코랄, 네가 별을 찾아와 줄 수 있겠니? 먼저 동쪽 숲을 살펴보렴."])
 
 [node name="Sprite2D" parent="Objects/OwlChief" index="0"]
-texture = ExtResource("5_owl")
+texture = ExtResource("18_owl")
 hframes = 2
 
-[node name="ShadowSlime" parent="Objects" instance=ExtResource("6_slime")]
-position = Vector2(150, 60)
-
-[node name="ShadowSlime2" parent="Objects" instance=ExtResource("6_slime")]
-position = Vector2(-150, 90)
-
-[node name="ShadowSlime3" parent="Objects" instance=ExtResource("6_slime")]
-position = Vector2(170, -90)
-
-[node name="RaccoonMerchant" parent="Objects" instance=ExtResource("4_npc")]
-position = Vector2(-136, -84)
-script = ExtResource("8_raccoon_script")
+[node name="RaccoonMerchant" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(366, 252)
+script = ExtResource("19_raccoon_script")
 npc_name = "너구리 상인"
 
 [node name="Sprite2D" parent="Objects/RaccoonMerchant" index="0"]
-texture = ExtResource("9_raccoon")
+texture = ExtResource("20_raccoon")
 hframes = 2
 
-[node name="TimidRabbit" parent="Objects" instance=ExtResource("4_npc")]
-position = Vector2(8, -88)
-script = ExtResource("10_rabbit_script")
+[node name="TimidRabbit" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(410, 186)
+script = ExtResource("21_rabbit_script")
 npc_name = "겁많은 토끼"
 
 [node name="Sprite2D" parent="Objects/TimidRabbit" index="0"]
-texture = ExtResource("11_rabbit")
+texture = ExtResource("22_rabbit")
 hframes = 2
 
-[node name="TurtleGrandma" parent="Objects" instance=ExtResource("4_npc")]
-position = Vector2(-176, -28)
-script = ExtResource("14_turtle_script")
+[node name="TurtleGrandma" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(146, 330)
+script = ExtResource("25_turtle_script")
 npc_name = "거북이 할머니"
 blink_interval = 4.0
 
 [node name="Sprite2D" parent="Objects/TurtleGrandma" index="0"]
-texture = ExtResource("15_turtle")
+texture = ExtResource("26_turtle")
 hframes = 2
 
-[node name="BabyRabbit" parent="Objects" instance=ExtResource("4_npc")]
-position = Vector2(216, 112)
-script = ExtResource("12_baby_script")
+[node name="BabyRabbit" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(600, 340)
+script = ExtResource("23_baby_script")
 npc_name = "아기 토끼"
-home_position = Vector2(34, -82)
+home_position = Vector2(428, 190)
 blink_interval = 2.0
 
 [node name="Sprite2D" parent="Objects/BabyRabbit" index="0"]
-texture = ExtResource("13_baby")
+texture = ExtResource("24_baby")
 hframes = 2
 
-[node name="Acorn" parent="Objects" instance=ExtResource("16_acorn")]
-position = Vector2(96, 112)
+[node name="Signpost" parent="Objects" instance=ExtResource("3_npc")]
+position = Vector2(436, 246)
+npc_name = "표지판"
+lines = Array[String](["← 반딧불 마을   |   동쪽 숲 →", "(그림자 몬스터 출몰 주의!)"])
 
-[node name="Acorn2" parent="Objects" instance=ExtResource("16_acorn")]
-position = Vector2(-208, 110)
+[node name="Sprite2D" parent="Objects/Signpost" index="0"]
+texture = ExtResource("17_sign")
+hframes = 1
 
-[node name="HUD" parent="." instance=ExtResource("7_hud")]
+[node name="ShadowSlime1" parent="Objects" instance=ExtResource("4_slime")]
+position = Vector2(515, 105)
+
+[node name="ShadowSlime2" parent="Objects" instance=ExtResource("4_slime")]
+position = Vector2(595, 150)
+
+[node name="ShadowSlime3" parent="Objects" instance=ExtResource("4_slime")]
+position = Vector2(596, 236)
+
+[node name="ShadowSlime4" parent="Objects" instance=ExtResource("4_slime")]
+position = Vector2(515, 355)
+
+[node name="Acorn1" parent="Objects" instance=ExtResource("6_acorn")]
+position = Vector2(40, 300)
+
+[node name="Acorn2" parent="Objects" instance=ExtResource("6_acorn")]
+position = Vector2(596, 84)
+
+[node name="Acorn3" parent="Objects" instance=ExtResource("6_acorn")]
+position = Vector2(470, 335)
+
+[node name="NightTint" type="CanvasModulate" parent="."]
+color = Color(0.45, 0.5, 0.78, 1)
+
+[node name="Fireflies" parent="." instance=ExtResource("7_fireflies")]
+
+[node name="HUD" parent="." instance=ExtResource("5_hud")]

@@ -125,17 +125,6 @@ def make_fox():
     sheet.save(OUT / "coral.png")
 
 
-def make_grass():
-    """바닥 풀밭 타일 (16x16, 반복해서 깔려요)."""
-    base, dark, light = (74, 124, 89), (58, 102, 72), (104, 156, 106)
-    img = Image.new("RGBA", (16, 16), base)
-    for x, y in [(2, 3), (3, 2), (10, 5), (11, 4), (6, 11), (7, 10), (13, 13), (14, 12)]:
-        img.putpixel((x, y), light)
-    for x, y in [(2, 4), (11, 5), (7, 11), (14, 13), (5, 6), (12, 9), (1, 13)]:
-        img.putpixel((x, y), dark)
-    img.save(OUT / "grass.png")
-
-
 def make_rock():
     """바위 (32x32)."""
     rows = [
@@ -478,7 +467,6 @@ def make_acorn():
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     make_fox()
-    make_grass()
     make_rock()
     make_owl()
     make_talk_icon()

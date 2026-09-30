@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" path="res://assets/acorn.png" id="4_acorn"]
 
 [node name="HUD" type="CanvasLayer"]
+layer = 5
 script = ExtResource("1_hud")
 heart_full = ExtResource("2_full")
 heart_empty = ExtResource("3_empty")
