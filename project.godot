@@ -1,0 +1,25 @@
+; Godot 프로젝트 설정 파일입니다.
+; Godot 에디터의 "프로젝트 → 프로젝트 설정" 메뉴에서 바꾸는 것을 추천해요.
+
+config_version=5
+
+[application]
+
+config/name="별똥별 줍는 여우"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=320
+window/size/viewport_height=180
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="viewport"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

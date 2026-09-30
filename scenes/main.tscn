@@ -1,0 +1,91 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(480, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(16, 270)
+
+[node name="Main" type="Node2D"]
+
+[node name="Ground" type="ColorRect" parent="."]
+offset_left = -240.0
+offset_top = -135.0
+offset_right = 240.0
+offset_bottom = 135.0
+mouse_filter = 2
+color = Color(0.2, 0.38, 0.27, 1)
+
+[node name="Walls" type="Node2D" parent="."]
+
+[node name="Top" type="StaticBody2D" parent="Walls"]
+position = Vector2(0, -143)
+
+[node name="Body" type="ColorRect" parent="Walls/Top"]
+offset_left = -240.0
+offset_top = -8.0
+offset_right = 240.0
+offset_bottom = 8.0
+color = Color(0.13, 0.2, 0.15, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Top"]
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="Bottom" type="StaticBody2D" parent="Walls"]
+position = Vector2(0, 143)
+
+[node name="Body" type="ColorRect" parent="Walls/Bottom"]
+offset_left = -240.0
+offset_top = -8.0
+offset_right = 240.0
+offset_bottom = 8.0
+color = Color(0.13, 0.2, 0.15, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Bottom"]
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="Left" type="StaticBody2D" parent="Walls"]
+position = Vector2(-248, 0)
+
+[node name="Body" type="ColorRect" parent="Walls/Left"]
+offset_left = -8.0
+offset_top = -135.0
+offset_right = 8.0
+offset_bottom = 135.0
+color = Color(0.13, 0.2, 0.15, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Left"]
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="Right" type="StaticBody2D" parent="Walls"]
+position = Vector2(248, 0)
+
+[node name="Body" type="ColorRect" parent="Walls/Right"]
+offset_left = -8.0
+offset_top = -135.0
+offset_right = 8.0
+offset_bottom = 135.0
+color = Color(0.13, 0.2, 0.15, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Right"]
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="Rock" type="StaticBody2D" parent="."]
+position = Vector2(64, -24)
+
+[node name="Body" type="ColorRect" parent="Rock"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.55, 0.55, 0.6, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Rock"]
+shape = SubResource("RectangleShape2D_rock")
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
