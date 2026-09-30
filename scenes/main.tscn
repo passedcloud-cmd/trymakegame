@@ -1,16 +1,18 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="Texture2D" path="res://assets/grass.png" id="2_grass"]
 [ext_resource type="Texture2D" path="res://assets/rock.png" id="3_rock"]
 [ext_resource type="PackedScene" path="res://scenes/npc.tscn" id="4_npc"]
 [ext_resource type="Texture2D" path="res://assets/owl_chief.png" id="5_owl"]
+[ext_resource type="PackedScene" path="res://scenes/shadow_slime.tscn" id="6_slime"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="7_hud"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rock"]
 size = Vector2(26, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
-size = Vector2(480, 16)
+size = Vector2(512, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
 size = Vector2(16, 270)
@@ -32,9 +34,9 @@ stretch_mode = 1
 position = Vector2(0, -143)
 
 [node name="Body" type="ColorRect" parent="Walls/Top"]
-offset_left = -240.0
+offset_left = -256.0
 offset_top = -8.0
-offset_right = 240.0
+offset_right = 256.0
 offset_bottom = 8.0
 color = Color(0.13, 0.2, 0.15, 1)
 
@@ -45,9 +47,9 @@ shape = SubResource("RectangleShape2D_wall_h")
 position = Vector2(0, 143)
 
 [node name="Body" type="ColorRect" parent="Walls/Bottom"]
-offset_left = -240.0
+offset_left = -256.0
 offset_top = -8.0
-offset_right = 240.0
+offset_right = 256.0
 offset_bottom = 8.0
 color = Color(0.13, 0.2, 0.15, 1)
 
@@ -103,3 +105,14 @@ lines = Array[String](["오, 코랄! 무사했구나. 어젯밤 일은 너도 �
 [node name="Sprite2D" parent="Objects/OwlChief" index="0"]
 texture = ExtResource("5_owl")
 hframes = 2
+
+[node name="ShadowSlime" parent="Objects" instance=ExtResource("6_slime")]
+position = Vector2(150, 60)
+
+[node name="ShadowSlime2" parent="Objects" instance=ExtResource("6_slime")]
+position = Vector2(-150, 90)
+
+[node name="ShadowSlime3" parent="Objects" instance=ExtResource("6_slime")]
+position = Vector2(170, -90)
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]

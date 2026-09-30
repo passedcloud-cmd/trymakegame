@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
 [ext_resource type="Texture2D" path="res://assets/coral.png" id="2_sprite"]
+[ext_resource type="Texture2D" path="res://assets/tail_swipe.png" id="3_swipe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feet"]
 size = Vector2(10, 6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tail"]
+size = Vector2(16, 16)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 motion_mode = 1
@@ -19,4 +23,17 @@ vframes = 3
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_feet")
 
+[node name="TailHitbox" type="Area2D" parent="."]
+position = Vector2(0, 14)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TailHitbox"]
+shape = SubResource("RectangleShape2D_tail")
+
+[node name="TailSwipe" type="Sprite2D" parent="."]
+texture = ExtResource("3_swipe")
+
 [node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -256
+limit_top = -151
+limit_right = 256
+limit_bottom = 151

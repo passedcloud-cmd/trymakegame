@@ -240,6 +240,83 @@ def make_talk_icon():
     img.save(OUT / "talk_icon.png")
 
 
+# ── 그림자 슬라임 ────────────────────────────────────────
+SLIME_COLORS = {
+    ".": (0, 0, 0, 0),
+    "o": (25, 18, 40, 255),     # 테두리
+    "h": (110, 88, 150, 255),   # 밝은 부분
+    "p": (68, 48, 100, 255),    # 몸
+    "d": (45, 32, 70, 255),     # 그림자
+    "y": (255, 232, 120, 255),  # 빛나는 눈
+}
+SLIME_BODY = [
+    "......oo",
+    "....oohh",
+    "...ohhpp",
+    "..ohpppp",
+    "..opyypp",
+    "..opyypp",
+    ".opppppp",
+    ".oddpppp",
+    "..oddddd",
+    "...ooooo",
+]
+
+
+def make_slime():
+    """그림자 슬라임: 가로 2칸 (보통, 납작) - 번갈아 보여서 통통 튀는 느낌을 줘요."""
+    sheet = Image.new("RGBA", (32, 16))
+    normal = ["........"] * 6 + SLIME_BODY
+    # 납작한 모습: 몸 한 줄을 빼고 아래로 내려요.
+    squashed = ["........"] * 7 + SLIME_BODY[:5] + SLIME_BODY[6:]
+    for i, half in enumerate([normal, squashed]):
+        rows = mirror(half)
+        for y, row in enumerate(rows):
+            for x, ch in enumerate(row):
+                sheet.putpixel((i * 16 + x, y), SLIME_COLORS[ch])
+    sheet.save(OUT / "shadow_slime.png")
+
+
+def make_hearts():
+    """체력 하트 (9x8): 꽉 찬 하트, 빈 하트."""
+    rows = [
+        ".ooo.ooo.",
+        "orrrorrro",
+        "orwrrrrro",
+        "orrrrrrro",
+        ".orrrrro.",
+        "..orrro..",
+        "...oro...",
+        "....o....",
+    ]
+    full = {".": (0, 0, 0, 0), "o": (27, 27, 42, 255), "r": (232, 72, 85, 255),
+            "w": (255, 200, 200, 255)}
+    empty = {".": (0, 0, 0, 0), "o": (27, 27, 42, 255), "r": (70, 62, 80, 255),
+             "w": (70, 62, 80, 255)}
+    for name, colors in [("heart_full.png", full), ("heart_empty.png", empty)]:
+        img = Image.new("RGBA", (9, 8))
+        for y, row in enumerate(rows):
+            for x, ch in enumerate(row):
+                img.putpixel((x, y), colors[ch])
+        img.save(OUT / name)
+
+
+def make_tail_swipe():
+    """꼬리 휘두르기 효과 (16x24, 오른쪽 방향 초승달 모양)."""
+    img = Image.new("RGBA", (16, 24))
+    cx, cy = 0.0, 11.5
+    for y in range(24):
+        for x in range(16):
+            dist = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
+            if x < 3:
+                continue
+            if 10 <= dist < 12:
+                img.putpixel((x, y), (255, 241, 214, 255))
+            elif 8 <= dist < 10:
+                img.putpixel((x, y), (255, 160, 100, 220))
+    img.save(OUT / "tail_swipe.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     make_fox()
@@ -247,4 +324,7 @@ if __name__ == "__main__":
     make_rock()
     make_owl()
     make_talk_icon()
+    make_slime()
+    make_hearts()
+    make_tail_swipe()
     print("assets/ 폴더에 그림을 만들었어요.")
