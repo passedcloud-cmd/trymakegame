@@ -49,6 +49,61 @@ func has_starlight() -> bool:
 	return flags.get("has_starlight", false)
 
 
+# ── 저장하기 ──────────────────────────────────────────
+# 저장 파일은 컴퓨터(웹 버전은 브라우저)의 user:// 폴더에 있어요.
+
+const SAVE_PATH := "user://save.json"
+const TITLE_SCENE := "res://scenes/title.tscn"
+
+
+## 지금 진행 상황을 저장해요. (대화가 끝날 때, 맵에 들어갈 때 등 자동으로 불려요)
+func save_game() -> void:
+	var scene := get_tree().current_scene
+	if scene == null or scene.scene_file_path == "" or scene.scene_file_path == TITLE_SCENE:
+		return  # 타이틀 화면에서는 저장하지 않아요.
+	var data := {
+		"scene": scene.scene_file_path,
+		"spawn": next_spawn,
+		"acorns": acorns,
+		"stars_returned": stars_returned,
+		"bonus_hearts": bonus_hearts,
+		"starlight_on": starlight_on,
+		"flags": flags,
+	}
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(data))
+
+
+## 저장 파일이 있는지 알려줘요.
+func has_save() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
+
+## 저장한 진행 상황을 불러와요. 이어서 시작할 맵과 출발 지점을 돌려줘요.
+func load_game() -> Dictionary:
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return {}
+	var data = JSON.parse_string(file.get_as_text())
+	if typeof(data) != TYPE_DICTIONARY:
+		return {}
+	acorns = int(data.get("acorns", 0))
+	stars_returned = int(data.get("stars_returned", 0))
+	bonus_hearts = int(data.get("bonus_hearts", 0))
+	starlight_on = bool(data.get("starlight_on", false))
+	flags = data.get("flags", {})
+	next_spawn = str(data.get("spawn", ""))
+	return {"scene": str(data.get("scene", "res://scenes/main.tscn")), "spawn": next_spawn}
+
+
+## 저장 파일을 지워요. (처음부터 시작할 때)
+func delete_save() -> void:
+	var dir := DirAccess.open("user://")
+	if dir and has_save():
+		dir.remove(SAVE_PATH.get_file())
+
+
 ## 게임을 처음부터 다시 시작할 때 모두 지워요.
 func reset() -> void:
 	acorns = 0

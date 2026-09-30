@@ -24,6 +24,7 @@ func _on_body_entered(body: Node2D) -> void:
 		Sound.play("pickup")
 		GameState.acorns += 1
 		GameState.flags[pickup_key()] = true
+		GameState.save_game()
 		queue_free()
 
 

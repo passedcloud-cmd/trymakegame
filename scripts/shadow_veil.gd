@@ -29,6 +29,7 @@ func dispel() -> void:
 	is_fading = true
 	Sound.play("dispel", 0.0, 1.0, 0.0)
 	GameState.flags[flag_key()] = true
+	GameState.save_game()
 	$CollisionShape2D.set_deferred("disabled", true)
 	var tween := create_tween().set_parallel()
 	tween.tween_property($Sprite2D, "modulate:a", 0.0, 0.8)

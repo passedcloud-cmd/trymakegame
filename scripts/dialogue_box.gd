@@ -204,6 +204,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func close() -> void:
 	is_open = false
+	GameState.save_game.call_deferred()
 	choice_panel.hide()
 	hide()
 	finished.emit()

@@ -1,0 +1,160 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/title.gd" id="1_title"]
+[ext_resource type="Texture2D" path="res://assets/title/title_bg.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://assets/coral.png" id="3_coral"]
+
+[sub_resource type="Gradient" id="Gradient_twinkle"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0.95, 0.8, 0, 1, 0.95, 0.8, 1, 1, 0.95, 0.8, 0)
+
+[sub_resource type="Gradient" id="Gradient_firefly"]
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(0.9, 1, 0.5, 0, 0.9, 1, 0.5, 1, 0.9, 1, 0.5, 1, 0.9, 1, 0.5, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.1, 0.1, 0.18, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.95, 0.84, 1)
+anti_aliasing = false
+
+[node name="Title" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_title")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 320.0
+offset_bottom = 180.0
+texture = ExtResource("2_bg")
+
+[node name="Sky" type="Node2D" parent="."]
+
+[node name="Twinkles" type="CPUParticles2D" parent="Sky"]
+position = Vector2(160, 55)
+amount = 18
+lifetime = 2.0
+preprocess = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(160, 55)
+gravity = Vector2(0, 0)
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_twinkle")
+
+[node name="Fireflies" type="CPUParticles2D" parent="Sky"]
+position = Vector2(230, 150)
+amount = 14
+lifetime = 4.0
+preprocess = 4.0
+emission_shape = 3
+emission_rect_extents = Vector2(80, 16)
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+tangential_accel_min = -5.0
+tangential_accel_max = 5.0
+color_ramp = SubResource("Gradient_firefly")
+
+[node name="Coral" type="Sprite2D" parent="."]
+position = Vector2(92, 128)
+texture = ExtResource("3_coral")
+hframes = 4
+vframes = 3
+frame = 4
+
+[node name="TitleText" type="Label" parent="."]
+layout_mode = 0
+offset_top = 22.0
+offset_right = 320.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(1, 0.86, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0.06, 0.05, 0.14, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+text = "별똥별 줍는 여우"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 0
+offset_top = 52.0
+offset_right = 320.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(0.75, 0.78, 0.95, 1)
+theme_override_colors/font_outline_color = Color(0.06, 0.05, 0.14, 1)
+theme_override_constants/outline_size = 2
+text = "The Fox Who Gathers Falling Stars"
+horizontal_alignment = 1
+
+[node name="Menu" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 78.0
+offset_right = 210.0
+offset_bottom = 124.0
+theme_override_constants/separation = 1
+
+[node name="Confirm" type="Label" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 80.0
+offset_right = 280.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 0.8, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0.06, 0.05, 0.14, 1)
+theme_override_constants/outline_size = 3
+text = "저장된 기록이 지워져요.
+정말 처음부터 시작할까요?
+Z: 예    X: 아니요"
+horizontal_alignment = 1
+
+[node name="Help" type="Label" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 164.0
+offset_right = 316.0
+offset_bottom = 178.0
+theme_override_colors/font_color = Color(0.6, 0.62, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0.06, 0.05, 0.14, 1)
+theme_override_constants/outline_size = 2
+text = "↑↓ 고르기   Z 결정   M 소리"
+horizontal_alignment = 2
+
+[node name="ControlsPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 10.0
+offset_right = 270.0
+offset_bottom = 170.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Text" type="Label" parent="ControlsPanel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 6.0
+offset_right = 208.0
+offset_bottom = 136.0
+theme_override_colors/font_color = Color(1, 0.98, 0.92, 1)
+text = "★ 조작법 ★
+방향키 ········· 이동
+Z / 스페이스 ··· 대화, 결정
+X ················ 꼬리 휘두르기
+C / Shift ······· 대시
+V ················ 별빛
+M ················ 소리 끄기/켜기"
+
+[node name="Close" type="Label" parent="ControlsPanel"]
+layout_mode = 0
+offset_top = 140.0
+offset_right = 220.0
+offset_bottom = 154.0
+theme_override_colors/font_color = Color(0.6, 0.62, 0.8, 1)
+text = "(Z를 누르면 닫혀요)"
+horizontal_alignment = 1

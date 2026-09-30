@@ -18,6 +18,7 @@ func go(scene_path: String, spawn_name: String) -> void:
 	# 새 맵이 준비될 때까지 잠깐 기다려요.
 	await get_tree().process_frame
 	await get_tree().process_frame
+	GameState.save_game()
 
 	tween = create_tween()
 	tween.tween_property(fade, "color:a", 0.0, 0.35)
